@@ -50,8 +50,10 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
   - Click on `Activate`
   - Follow the WooCommerce setup wizard
 
-##### 6. Link the plugin to the WordPress installation:
-  - ...
+##### 6. Activate Mailbiz WooCommerce Plugin:
+  - Access `http://localhost:60000/wp-admin/plugins.php`
+  - Find `Mailbiz WooCommerce Tracker` in the installed plugins list
+  - Click on `Activate`
 
 ## Project Structure
 
