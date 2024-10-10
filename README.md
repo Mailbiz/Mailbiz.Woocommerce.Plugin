@@ -79,7 +79,9 @@ After setting up the environment, you can start developing. Any changes made to 
 
 ## Compatibility
 
-#### Versions used for first development
+- WordPress: 1.5.0 (?) (get_option added)
+
+#### Versions used for development
 
 - WordPress: 6.6.2
 - WooCommerce: 9.3.3
