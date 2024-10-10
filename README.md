@@ -1,8 +1,6 @@
 # Mailbiz WooCommerce Plugin
 
-This project is aimed at developing a custom plugin for WooCommerce.
-
-The plugin adds support to WooCommerce for integrating with Mailbiz's Open Tracker.
+This plugin adds support to WooCommerce stores for integrating with Mailbiz's Open Tracker.
 
 The plugin adds a configuration panel to the WooCommerce settings page to allow the Mailbiz's support team to add the user credentials.
 Once this is set up, the plugin will automatically add the tracking scripts to the WooCommerce store.
@@ -16,55 +14,74 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 
 ### Installation
 
-##### 1. Clone the repository:
+#### 1. Clone the repository:
   ```sh
   git clone https://github.com/yourusername/woocommerce-plugin.git
   cd woocommerce-plugin
   ```
 
-##### 2. Set your .env file
+#### 2. Set your .env file
   Copy the `.env.example` file to `.env` and set the desired `PORT`.
   <small>(If you change the `PORT` after installing WP you might need to delete the `docker-volumes` and re-install)</small>
 
-##### 3. Start the Docker containers:
+#### 3. Start the Docker containers:
   ```sh
   docker compose up --build -d
   ```
 
-##### 4. Access your WordPress site:
+#### 4. Access your WordPress site:
   Open your browser and go to `http://localhost:60000`.
-  Follow the WordPress installation steps and activate WooCommerce.
+  Follow the WordPress installation steps.
 
   Suggested settings:
-  - Site Title: `WooCommerce Plugin`
+  - Site Title: `Mailbiz WooCommerce Tracker`
   - Username: `username`
   - Password: `password`
   - Email: `email@email.com`
 
   Login to the WordPress admin dashboard: `http://localhost:60000/wp-login.php`
 
-##### 5. Install and activate WooCommerce:
+#### 5. Install and activate WooCommerce:
   - Access `http://localhost:60000/wp-admin/plugin-install.php`
   - Search for `WooCommerce` and click on `Install Now`
   <small>This might take a few minutes</small>
   - Click on `Activate`
   - Follow the WooCommerce setup wizard
 
-##### 6. Activate Mailbiz WooCommerce Plugin:
+#### 6. Activate Mailbiz WooCommerce Plugin:
   - Access `http://localhost:60000/wp-admin/plugins.php`
   - Find `Mailbiz WooCommerce Tracker` in the installed plugins list
   - Click on `Activate`
 
+### Resetting the WordPress installation
+- Delete the `docker-volumes` directory and run `docker compose up --build -d` again.
+
+### Testing
+- Navigate to a product page and add it to the cart. Tracking events should be visible in the dev console.
+
 ## Project Structure
 
-- `docker-compose.yml`: Docker Compose configuration file to set up WordPress, MySQL, and WooCommerce.
-- `src/`: Directory containing the source code for the custom WooCommerce plugin.
-- `README.md`: Project documentation.
+- `README.md`: This file.
+- `docker-compose.yml`: Docker Compose configuration file to set up WordPress, MySQL and folder mapping.
+<br>
+- `docker-volumes`: Mapped directories for docker. Not versioned.
+- `docker-volumes/db_data`: Directory for the MySQL database.
+- `docker-volumes/wordpress`: Directory for the WordPress installation.
+- `docker-volumes/plugins`: WordPress plugins folder.
+<br>
+- `src/`: Directory containing the source code for the Mailbiz WooCommerce Tracker. Already mapped to the WordPress plugins folder.
 
 ## Usage
 
-After setting up the environment, you can start developing your custom WooCommerce plugin. Any changes made to the plugin files in the `src/` directory will be reflected in your WordPress installation.
+After setting up the environment, you can start developing. Any changes made to the plugin files in the `src/` directory will be reflected in your WordPress installation.
 
-## License
+## Build / production
 
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+## Compatibility
+
+#### Versions used for first development
+
+- WordPress: 6.6.2
+- WooCommerce: 9.3.3
+- MySQL: 8.0
+- PHP: 8.2.24
