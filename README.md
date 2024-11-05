@@ -53,6 +53,9 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
   - Find `Mailbiz WooCommerce Tracker` in the installed plugins list
   - Click on `Activate`
 
+#### 7. (optional) Enable WordPress debugging:
+Set `define('WP_DEBUG', true);` in `docker-volumes/wordpress/wp-config.php` to enable debugging
+
 ### Resetting the WordPress installation
 - Delete the docker container
 - Delete the `docker-volumes` directory
@@ -77,7 +80,9 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 
 After setting up the environment, you can start developing. Any changes made to the plugin files in the `src/` directory will be reflected in your WordPress installation.
 
-## Build / production
+## Build / production (wip)
+
+Copy the code inside the `src/` directory to `mailbiz-woocommerce-tracker.zip` file and upload it to the WordPress admin dashboard.
 
 ## Compatibility
 
