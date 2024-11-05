@@ -22,7 +22,7 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 
 #### 2. Set your .env file
   Copy the `.env.example` file to `.env` and set the desired `PORT`.
-  <small>(If you change the `PORT` after installing WP you might need to delete the `docker-volumes` and re-install)</small>
+  <small>(If you change the `PORT` after installing WP you might need to [reset the WordPress installation](#resetting-the-wordpress-installation)</small>
 
 #### 3. Start the Docker containers:
   ```sh
@@ -54,7 +54,9 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
   - Click on `Activate`
 
 ### Resetting the WordPress installation
-- Delete the `docker-volumes` directory and run `docker compose up --build -d` again.
+- Delete the docker container
+- Delete the `docker-volumes` directory
+- Run `docker compose up --build -d` again.
 
 ### Testing
 - Navigate to a product page and add it to the cart. Tracking events should be visible in the dev console.

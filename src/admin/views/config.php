@@ -1,4 +1,4 @@
-<div class="mailbiz__settings">
+<div class="mailbiz-config">
   <h3>Chave de integração</h3>
   <form action="<?php echo esc_url(menu_page_url('mailbiz-woocommerce-tracker', false)) ?>" method="post">
     <?php wp_nonce_field(Mailbiz_Admin::NONCE); ?>

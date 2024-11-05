@@ -47,8 +47,9 @@ class Mailbiz_Admin
 	public static function set_integration_key()
 	{
 
-		if (!wp_verify_nonce($_POST['_wpnonce'], self::NONCE))
-			return false;
+		if (!wp_verify_nonce($_POST['_wpnonce'], self::NONCE)) {
+			return;
+		}
 
 		$integration_key = $_POST['integration-key'];
 

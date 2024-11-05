@@ -25,7 +25,7 @@ defined('ABSPATH') || exit;
 // }
 
 if (is_admin() || (defined('WP_CLI') && WP_CLI)) {
-	require_once __DIR__ . '/mailbiz-admin.php';
+	require_once __DIR__ . '/admin/mailbiz-admin.php';
 	add_action('init', ['Mailbiz_Admin', 'init']);
 }
 
