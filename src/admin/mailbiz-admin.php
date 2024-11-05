@@ -9,8 +9,8 @@ class Mailbiz_Admin
 
 	public static function init()
 	{
-		if (isset($_POST['action']) && $_POST['action'] == 'set-integration-key') {
-			self::set_integration_key();
+		if (isset($_POST['action']) && $_POST['action'] == 'mailbiz-update-admin-config') {
+			self::update_admin_config();
 		}
 
 		if (!self::$hooks_initialized) {
@@ -24,6 +24,7 @@ class Mailbiz_Admin
 
 		add_action('admin_menu', ['Mailbiz_Admin', 'admin_menu']); # 
 		add_action('admin_enqueue_scripts', ['Mailbiz_Admin', 'load_resources']);
+
 	}
 
 	public static function admin_menu()
@@ -44,14 +45,20 @@ class Mailbiz_Admin
 		wp_enqueue_style('mailbiz-config-css');
 	}
 
-	public static function set_integration_key()
+	public static function update_admin_config()
 	{
 
 		if (!wp_verify_nonce($_POST['_wpnonce'], self::NONCE)) {
 			return;
 		}
 
+		$get_boolean_arg = function ($option) {
+			return isset($_POST[$option]) && $_POST[$option] == 'on' ? 'true' : 'false';
+		};
+
+		$integration_enable = $get_boolean_arg('integration-enable');
 		$integration_key = $_POST['integration-key'];
+		$integration_journey = $get_boolean_arg('integration-journey');
 
 		if (empty($integration_key)) {
 			return;
@@ -64,6 +71,8 @@ class Mailbiz_Admin
 		// TODO: alerta de erro caso haja algum erro
 
 		update_option('mailbiz_integration_key', $integration_key);
+		update_option('mailbiz_integration_enable', $integration_enable);
+		update_option('mailbiz_integration_journey', $integration_journey);
 	}
 }
 
