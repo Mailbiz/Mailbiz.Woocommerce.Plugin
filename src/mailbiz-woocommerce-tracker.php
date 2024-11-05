@@ -29,6 +29,9 @@ if (is_admin() || (defined('WP_CLI') && WP_CLI)) {
 	add_action('init', ['Mailbiz_Admin', 'init']);
 }
 
+require_once __DIR__ . '/public/mailbiz-public.php';
+add_action('init', ['Mailbiz_Public', 'init']);
+
 // Check if configuration is set
 
 // Render configuration page
