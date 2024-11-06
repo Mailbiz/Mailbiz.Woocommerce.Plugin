@@ -86,7 +86,9 @@ Copy the code inside the `src/` directory to `mailbiz-woocommerce-tracker.zip` f
 
 ## Compatibility
 
-- WordPress: 1.5.0 (?) (get_option added)
+- WordPress: 1.5.0 (get_option added)
+- WordPress: 4.1.0 (script_loader_tag added)
+- PHP: 4.3.0 (file_get_contents added)
 
 #### Versions used for development
 
