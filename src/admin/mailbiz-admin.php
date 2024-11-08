@@ -24,31 +24,11 @@ class Mailbiz_Admin
 
 		add_action('admin_menu', ['Mailbiz_Admin', 'admin_menu']);
 		add_action('admin_enqueue_scripts', ['Mailbiz_Admin', 'load_resources']);
-
 	}
 
 	public static function admin_menu()
 	{
 		add_options_page('Mailbiz WooCommerce Tracker', 'Mailbiz', 'manage_options', 'mailbiz-woocommerce-tracker', ['Mailbiz_Admin', 'load_options_page']);
-	}
-
-	public static function load_options_page()
-	{
-		$file = __DIR__ . '/views/' . 'config' . '.php';
-
-		include($file);
-	}
-
-	public static function load_success_notice() {
-		$file = __DIR__ . '/views/' . 'notice-success' . '.php';
-
-		include($file);
-	}
-
-	public static function load_error_notice() {
-		$file = __DIR__ . '/views/' . 'notice-error' . '.php';
-
-		include($file);
 	}
 
 	public static function load_resources()
@@ -83,6 +63,7 @@ class Mailbiz_Admin
 
 		if (!$is_integration_key_valid) {
 			$integration_enable = 'no';
+			$journey_enable = 'no';
 			add_action('admin_notices', ['Mailbiz_Admin', 'load_error_notice']);
 		} else {
 			add_action('admin_notices', ['Mailbiz_Admin', 'load_success_notice']);
@@ -91,6 +72,27 @@ class Mailbiz_Admin
 		update_option('mailbiz_integration_key', $integration_key);
 		update_option('mailbiz_integration_enable', $integration_enable);
 		update_option('mailbiz_journey_enable', $journey_enable);
+	}
+
+	public static function load_options_page()
+	{
+		self::load_view('config');
+	}
+
+	public static function load_success_notice()
+	{
+		self::load_view('notice-success');
+	}
+
+	public static function load_error_notice()
+	{
+		self::load_view('notice-error');
+	}
+
+	public static function load_view($view)
+	{
+		$file = __DIR__ . '/views/' . $view . '.php';
+		include($file);
 	}
 }
 
