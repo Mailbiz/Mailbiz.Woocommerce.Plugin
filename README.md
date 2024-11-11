@@ -56,6 +56,10 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 #### 7. (optional) Enable WordPress debugging:
 Set `define('WP_DEBUG', true);` in `docker-volumes/wordpress/wp-config.php` to enable debugging
 
+#### 8. (optional) Configure xdebug (to debug PHP code):
+Setting the `XDEBUG_CONFIG` environment variable in the `docker-compose.yml` file should be enough.
+If this doesn't work, manually enter into the container and set the same options in the `xdebug.ini` file.
+
 ### Resetting the WordPress installation
 - Delete the docker container
 - Delete the `docker-volumes` directory
