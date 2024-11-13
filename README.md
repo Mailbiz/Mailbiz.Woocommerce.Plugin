@@ -93,6 +93,7 @@ Copy the code inside the `src/` directory to `mailbiz-woocommerce-tracker.zip` f
 - WordPress: 1.5.0 (get_option added)
 - WordPress: 4.1.0 (script_loader_tag added)
 - PHP: 4.3.0 (file_get_contents added)
+- WooCommerce: 1.0 (wc_get_product_category_list added)
 
 #### Versions used for development
 
@@ -100,3 +101,7 @@ Copy the code inside the `src/` directory to `mailbiz-woocommerce-tracker.zip` f
 - WooCommerce: 9.3.3
 - MySQL: 8.0
 - PHP: 8.2.24
+
+#### Docs
+
+https://wp-kama.com/plugin/woocommerce/function
