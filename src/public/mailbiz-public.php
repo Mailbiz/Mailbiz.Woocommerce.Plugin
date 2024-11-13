@@ -101,20 +101,22 @@ class Mailbiz_Public
 	}
 	public static function get_image($data)
 	{
-		$image_ids = $data->get_gallery_image_ids();
-		if (!isset($image_ids[0])) {
+		$image_id = $data->get_image_id();
+		if (!isset($image_id)) {
 			return null;
 		}
-		$image = wp_get_attachment_image_src($image_ids[0], 'large');
+
+		$image = wp_get_attachment_image_src($image_id, 'large');
 		if (!isset($image[0])) {
 			return null;
 		}
+
 		return $image[0];
 	}
 
-	public static function get_category($data)
+	public static function get_category($product_id)
 	{
-		$categories = get_the_terms($data->get_id(), 'product_cat');
+		$categories = get_the_terms($product_id, 'product_cat');
 		if (!is_wp_error($categories) && !isset($categories[0])) {
 			return null;
 		}
@@ -125,9 +127,8 @@ class Mailbiz_Public
 		return $category->name;
 	}
 
-	public static function get_brand($data)
+	public static function get_brand($product_id)
 	{
-		$product_id = $data->get_id();
 		$possible_brand_taxonomies = ['product_brand', 'yith_product_brand', 'pa_brand'];
 		foreach ($possible_brand_taxonomies as $taxonomy) {
 			$brands = get_the_terms($product_id, $taxonomy);
@@ -151,8 +152,8 @@ class Mailbiz_Public
 				'product_id' => strval($item['product_id']),
 				'sku' => $item['product_id'] . "_" . $data->get_id(),
 				'name' => $data->get_name(),
-				'category' => self::get_category($data),
-				'brand' => self::get_brand($data),
+				'category' => self::get_category($item['product_id']),
+				'brand' => self::get_brand($item['product_id']),
 				'price' => floatval($data->get_price()),
 				'price_from' => floatval($data->get_regular_price()),
 				'quantity' => $item['quantity'],
