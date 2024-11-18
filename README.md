@@ -21,7 +21,7 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
   ```
 
 #### 2. Set your .env file
-  Copy the `.env.example` file to `.env` and set the desired `PORT`.
+  Copy the `.env.example` file to `.env` and set the desired variables.
   <small>(If you change the `PORT` after installing WP you might need to [reset the WordPress installation](#resetting-the-wordpress-installation)</small>
 
 #### 3. Start the Docker containers:
@@ -66,7 +66,7 @@ If this doesn't work, manually enter into the container and set the same options
 - Run `docker compose up --build -d` again.
 
 ### Testing
-- Navigate to a product page and add it to the cart. Tracking events should be visible in the dev console.
+- Navigate to a product page and add it to the cart. Events should be tracked.
 
 ## Project Structure
 
@@ -78,7 +78,7 @@ If this doesn't work, manually enter into the container and set the same options
 - `docker-volumes/wordpress`: Directory for the WordPress installation.
 - `docker-volumes/plugins`: WordPress plugins folder.
 <br>
-- `src/`: Directory containing the source code for the Mailbiz WooCommerce Tracker. Already mapped to the WordPress plugins folder.
+- `src/`: Directory containing the source code for the Mailbiz WooCommerce Tracker. Already mapped to the WordPress plugins folder as `mailbiz-woocommerce-tracker`.
 
 ## Usage
 

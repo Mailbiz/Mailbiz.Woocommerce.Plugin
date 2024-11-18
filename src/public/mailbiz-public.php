@@ -60,6 +60,8 @@ class Mailbiz_Public
 		// $data->get_attributes -- pode ser útil para pegar as properties do produto
 
 		// ?? $data->get_permalink -- pode ser útil para pegar a URL do produto
+
+		// WC()->cart->get_cart_url() -- pegar a URL do carrinho
 	}
 
 	public static function filter_set_script_integration_key($tag, $handle, $src)
@@ -139,16 +141,24 @@ class Mailbiz_Public
 		return null;
 	}
 
-	public static function woocommerce_cart_updated($arg1)
+	public static function get_properties($data)
 	{
-		if (self::$count === 0) {
-			self::$count = 1;
-			return;
+		$properties = [];
+		$attributes = $data->get_attributes();
+		foreach ($attributes as $_ => $attr) {
+			$attr_value = $attr->get_options()[$attr->get_position()];
+			$attr_name = $attr->get_name();
+			$properties[$attr_name] = $attr_value;
 		}
+		return $properties;
+	}
 
-		$mailbiz_cart = array_map(function ($item) {
+	public static function get_items($cart_items)
+	{
+		$items = [];
+		foreach ($cart_items as $item) {
 			$data = $item['data'];
-			return [
+			$items[] = [
 				'product_id' => strval($item['product_id']),
 				'sku' => $item['product_id'] . "_" . $data->get_id(),
 				'name' => $data->get_name(),
@@ -159,10 +169,77 @@ class Mailbiz_Public
 				'quantity' => $item['quantity'],
 				'url' => get_permalink($data->get_id()),
 				'image_url' => self::get_image($data),
+				'properties' => self::get_properties($data),
+				// 'recovery_properties'
 			];
-		}, WC()->cart->get_cart());
+		}
+		return $items;
+	}
 
-		wp_add_inline_script('mailbiz-tracker', 'var WOO = ' . json_encode($mailbiz_cart, JSON_FORCE_OBJECT | JSON_PARTIAL_OUTPUT_ON_ERROR, 8192) . ';');
+	public static function get_coupons_string($coupons)
+	{
+		$coupons_string = '';
+		// Avoid implode to avoid PHP warning
+		foreach ($coupons as $_ => $coupon) {
+			$code = $coupon->get_code();
+			if ($coupons_string) {
+				$coupons_string .= ", $code";
+			} else {
+				$coupons_string .= $code;
+			}
+		}
+		return $coupons_string;
+	}
+
+	public static function get_delivery_address($shipping)
+	{
+		$delivery_address = [];
+		if ($shipping['postcode']) {
+			$delivery_address['postal_code'] = $shipping['postcode'];
+		}
+		if ($shipping['address_1']) {
+			$delivery_address['address_line1'] = $shipping['address_1'];
+		}
+		if ($shipping['address_2']) {
+			$delivery_address['address_line2'] = $shipping['address_2'];
+		}
+		if ($shipping['city']) {
+			$delivery_address['city'] = $shipping['city'];
+		}
+		if ($shipping['state']) {
+			$delivery_address['state'] = $shipping['state'];
+		}
+		if ($shipping['country']) {
+			$delivery_address['country'] = $shipping['country'];
+		}
+		if (count($delivery_address) > 0) {
+			return $delivery_address;
+		}
+		return null;
+
+		// address_number?: string;
+	}
+
+	public static function woocommerce_cart_updated($arg1)
+	{
+		if (self::$count === 0) {
+			self::$count = 1;
+			return;
+		}
+
+		$cart_sync = [];
+		$cart_sync['cart_id'] = WC()->cart->get_cart_hash();
+		$cart_sync['items'] = self::get_items(WC()->cart->get_cart());
+		$cart_sync['subtotal'] = floatval(WC()->cart->get_subtotal());
+		$cart_sync['freight'] = floatval(WC()->cart->get_shipping_total());
+		$cart_sync['discounts'] = floatval(WC()->cart->get_discount_total());
+		$cart_sync['tax'] = floatval(WC()->cart->get_taxes_total());
+		$cart_sync['total'] = floatval(WC()->cart->get_cart_contents_total());
+		$cart_sync['coupons'] = self::get_coupons_string(WC()->cart->get_coupons());
+		$cart_sync['currency'] = get_woocommerce_currency();
+		$cart_sync['delivery_address'] = self::get_delivery_address(WC()->customer->get_shipping());
+
+		wp_add_inline_script('mailbiz-tracker', 'var WOO = ' . json_encode($cart_sync, JSON_PARTIAL_OUTPUT_ON_ERROR) . ';');
 	}
 }
 
