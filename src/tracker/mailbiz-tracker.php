@@ -123,6 +123,10 @@ class Mailbiz_Tracker
 			'currency' => get_woocommerce_currency(),
 			'delivery_address' => self::get_delivery_address(WC()->customer->get_shipping()),
 		];
+    if ($cart_sync['cart_id'] === '') {
+      return null;
+    }
+
 		$cart_sync = self::unset_null_values($cart_sync);
     $cart_sync_event = ['cart' => $cart_sync];
     return $cart_sync_event;

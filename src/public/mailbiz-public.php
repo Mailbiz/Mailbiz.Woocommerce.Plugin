@@ -29,13 +29,15 @@ class Mailbiz_Public
 		}
 
 		require_once MAILBIZ_PLUGIN_DIR . '/tracker/mailbiz-tracker.php';
+
 		self::register_tracker();
-		add_action('wp_enqueue_scripts', ['Mailbiz_Public', 'enqueue_tracker']);
+
 		add_action('woocommerce_add_to_cart', ['Mailbiz_Public', 'woocommerce_add_to_cart']);
 		add_action('wp_login', ['Mailbiz_Public', 'wp_login']);
 		add_action('woocommerce_new_order', ['Mailbiz_Public', 'woocommerce_new_order']);
 
-		add_action('woocommerce_cart_updated', ['Mailbiz_Public', 'cart_sync_event']);
+		add_action('wp_footer', ['Mailbiz_Public', 'cart_sync_event']);
+		add_action('wp_footer', ['Mailbiz_Public', 'enqueue_tracker']);
 
 		// woocommerce_before_shop_loop
 
@@ -112,6 +114,10 @@ class Mailbiz_Public
 		// }
 
 		$cart_sync = Mailbiz_Tracker::get_cart_sync();
+		if (!$cart_sync) {
+			return;
+		}
+
 		$cart_sync_json = json_encode($cart_sync, JSON_PARTIAL_OUTPUT_ON_ERROR);
 		$js_code = "mb_track('cartSync', $cart_sync_json);";
 
