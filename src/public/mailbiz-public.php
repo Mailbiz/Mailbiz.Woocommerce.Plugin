@@ -141,24 +141,12 @@ class Mailbiz_Public
 		return null;
 	}
 
-	public static function get_properties($data)
-	{
-		$properties = [];
-		$attributes = $data->get_attributes();
-		foreach ($attributes as $_ => $attr) {
-			$attr_value = $attr->get_options()[$attr->get_position()];
-			$attr_name = $attr->get_name();
-			$properties[$attr_name] = $attr_value;
-		}
-		return $properties;
-	}
-
 	public static function get_items($cart_items)
 	{
 		$items = [];
 		foreach ($cart_items as $item) {
 			$data = $item['data'];
-			$items[] = [
+			$items[] = self::unset_null_values([
 				'product_id' => strval($item['product_id']),
 				'sku' => $item['product_id'] . "_" . $data->get_id(),
 				'name' => $data->get_name(),
@@ -169,9 +157,9 @@ class Mailbiz_Public
 				'quantity' => $item['quantity'],
 				'url' => get_permalink($data->get_id()),
 				'image_url' => self::get_image($data),
-				'properties' => self::get_properties($data),
+				'properties' => $data->get_attributes(),
 				// 'recovery_properties'
-			];
+			]);
 		}
 		return $items;
 	}
@@ -179,7 +167,7 @@ class Mailbiz_Public
 	public static function get_coupons_string($coupons)
 	{
 		$coupons_string = '';
-		// Avoid implode to avoid PHP warning
+		// Avoid implode to improve compatibility with PHP
 		foreach ($coupons as $_ => $coupon) {
 			$code = $coupon->get_code();
 			if ($coupons_string) {
@@ -220,6 +208,16 @@ class Mailbiz_Public
 		// address_number?: string;
 	}
 
+	public static function unset_null_values($array)
+	{
+		foreach ($array as $key => $value) {
+			if (is_null($value)) {
+				unset($array[$key]);
+			}
+		}
+		return $array;
+	}
+
 	public static function woocommerce_cart_updated($arg1)
 	{
 		if (self::$count === 0) {
@@ -227,19 +225,21 @@ class Mailbiz_Public
 			return;
 		}
 
-		$cart_sync = [];
-		$cart_sync['cart_id'] = WC()->cart->get_cart_hash();
-		$cart_sync['items'] = self::get_items(WC()->cart->get_cart());
-		$cart_sync['subtotal'] = floatval(WC()->cart->get_subtotal());
-		$cart_sync['freight'] = floatval(WC()->cart->get_shipping_total());
-		$cart_sync['discounts'] = floatval(WC()->cart->get_discount_total());
-		$cart_sync['tax'] = floatval(WC()->cart->get_taxes_total());
-		$cart_sync['total'] = floatval(WC()->cart->get_cart_contents_total());
-		$cart_sync['coupons'] = self::get_coupons_string(WC()->cart->get_coupons());
-		$cart_sync['currency'] = get_woocommerce_currency();
-		$cart_sync['delivery_address'] = self::get_delivery_address(WC()->customer->get_shipping());
+		$cart_sync = [
+			'cart_id' => WC()->cart->get_cart_hash(),
+			'items' => self::get_items(WC()->cart->get_cart()),
+			'subtotal' => floatval(WC()->cart->get_subtotal()),
+			'freight' => floatval(WC()->cart->get_shipping_total()),
+			'discounts' => floatval(WC()->cart->get_discount_total()),
+			'tax' => floatval(WC()->cart->get_taxes_total()),
+			'total' => floatval(WC()->cart->get_cart_contents_total()),
+			'coupons' => self::get_coupons_string(WC()->cart->get_coupons()),
+			'currency' => get_woocommerce_currency(),
+			'delivery_address' => self::get_delivery_address(WC()->customer->get_shipping()),
+		];
+		$cart_sync_json = json_encode(self::unset_null_values($cart_sync), JSON_PARTIAL_OUTPUT_ON_ERROR);
 
-		wp_add_inline_script('mailbiz-tracker', 'var WOO = ' . json_encode($cart_sync, JSON_PARTIAL_OUTPUT_ON_ERROR) . ';');
+		wp_add_inline_script('mailbiz-tracker', "mb_track('cartSync', { cart: $cart_sync_json });");
 	}
 }
 
