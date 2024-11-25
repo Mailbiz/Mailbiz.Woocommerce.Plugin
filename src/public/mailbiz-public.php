@@ -28,13 +28,14 @@ class Mailbiz_Public
 			return;
 		}
 
+		require_once MAILBIZ_PLUGIN_DIR . '/tracker/mailbiz-tracker.php';
 		self::register_tracker();
 		add_action('wp_enqueue_scripts', ['Mailbiz_Public', 'enqueue_tracker']);
 		add_action('woocommerce_add_to_cart', ['Mailbiz_Public', 'woocommerce_add_to_cart']);
 		add_action('wp_login', ['Mailbiz_Public', 'wp_login']);
 		add_action('woocommerce_new_order', ['Mailbiz_Public', 'woocommerce_new_order']);
 
-		add_action('woocommerce_cart_updated', ['Mailbiz_Public', 'woocommerce_cart_updated']);
+		add_action('woocommerce_cart_updated', ['Mailbiz_Public', 'cart_sync_event']);
 
 		// woocommerce_before_shop_loop
 
@@ -81,7 +82,7 @@ class Mailbiz_Public
 	}
 	public static function register_tracker()
 	{
-		wp_register_script('mailbiz-tracker', plugin_dir_url(__FILE__) . 'scripts/tracker.js', [], false, false);
+		wp_register_script('mailbiz-tracker', plugin_dir_url(__FILE__) . 'scripts/mb_track.js', [], false, false);
 	}
 	public static function enqueue_tracker()
 	{
@@ -101,145 +102,20 @@ class Mailbiz_Public
 	{
 		wp_add_inline_script('mailbiz-tracker', 'console.log("MAILBIZ:woocommerce_new_order")');
 	}
-	public static function get_image($data)
+
+	public static function cart_sync_event()
 	{
-		$image_id = $data->get_image_id();
-		if (!isset($image_id)) {
-			return null;
-		}
+		// echo 'A';
+		// if (self::$count === 0) {
+		// 	self::$count = 1;
+		// 	return;
+		// }
 
-		$image = wp_get_attachment_image_src($image_id, 'large');
-		if (!isset($image[0])) {
-			return null;
-		}
+		$cart_sync = Mailbiz_Tracker::get_cart_sync();
+		$cart_sync_json = json_encode($cart_sync, JSON_PARTIAL_OUTPUT_ON_ERROR);
+		$js_code = "mb_track('cartSync', $cart_sync_json);";
 
-		return $image[0];
-	}
-
-	public static function get_category($product_id)
-	{
-		$categories = get_the_terms($product_id, 'product_cat');
-		if (!is_wp_error($categories) && !isset($categories[0])) {
-			return null;
-		}
-		$category = $categories[0];
-		if (!isset($category->name)) {
-			return null;
-		}
-		return $category->name;
-	}
-
-	public static function get_brand($product_id)
-	{
-		$possible_brand_taxonomies = ['product_brand', 'yith_product_brand', 'pa_brand'];
-		foreach ($possible_brand_taxonomies as $taxonomy) {
-			$brands = get_the_terms($product_id, $taxonomy);
-			if (!is_wp_error($brands) && isset($brands[0])) {
-				return $brands[0];
-			}
-		}
-		return null;
-	}
-
-	public static function get_items($cart_items)
-	{
-		$items = [];
-		foreach ($cart_items as $item) {
-			$data = $item['data'];
-			$items[] = self::unset_null_values([
-				'product_id' => strval($item['product_id']),
-				'sku' => $item['product_id'] . "_" . $data->get_id(),
-				'name' => $data->get_name(),
-				'category' => self::get_category($item['product_id']),
-				'brand' => self::get_brand($item['product_id']),
-				'price' => floatval($data->get_price()),
-				'price_from' => floatval($data->get_regular_price()),
-				'quantity' => $item['quantity'],
-				'url' => get_permalink($data->get_id()),
-				'image_url' => self::get_image($data),
-				'properties' => $data->get_attributes(),
-				// 'recovery_properties'
-			]);
-		}
-		return $items;
-	}
-
-	public static function get_coupons_string($coupons)
-	{
-		$coupons_string = '';
-		// Avoid implode to improve compatibility with PHP
-		foreach ($coupons as $_ => $coupon) {
-			$code = $coupon->get_code();
-			if ($coupons_string) {
-				$coupons_string .= ", $code";
-			} else {
-				$coupons_string .= $code;
-			}
-		}
-		return $coupons_string;
-	}
-
-	public static function get_delivery_address($shipping)
-	{
-		$delivery_address = [];
-		if ($shipping['postcode']) {
-			$delivery_address['postal_code'] = $shipping['postcode'];
-		}
-		if ($shipping['address_1']) {
-			$delivery_address['address_line1'] = $shipping['address_1'];
-		}
-		if ($shipping['address_2']) {
-			$delivery_address['address_line2'] = $shipping['address_2'];
-		}
-		if ($shipping['city']) {
-			$delivery_address['city'] = $shipping['city'];
-		}
-		if ($shipping['state']) {
-			$delivery_address['state'] = $shipping['state'];
-		}
-		if ($shipping['country']) {
-			$delivery_address['country'] = $shipping['country'];
-		}
-		if (count($delivery_address) > 0) {
-			return $delivery_address;
-		}
-		return null;
-
-		// address_number?: string;
-	}
-
-	public static function unset_null_values($array)
-	{
-		foreach ($array as $key => $value) {
-			if (is_null($value)) {
-				unset($array[$key]);
-			}
-		}
-		return $array;
-	}
-
-	public static function woocommerce_cart_updated($arg1)
-	{
-		if (self::$count === 0) {
-			self::$count = 1;
-			return;
-		}
-
-		$cart_sync = [
-			'cart_id' => WC()->cart->get_cart_hash(),
-			'items' => self::get_items(WC()->cart->get_cart()),
-			'subtotal' => floatval(WC()->cart->get_subtotal()),
-			'freight' => floatval(WC()->cart->get_shipping_total()),
-			'discounts' => floatval(WC()->cart->get_discount_total()),
-			'tax' => floatval(WC()->cart->get_taxes_total()),
-			'total' => floatval(WC()->cart->get_cart_contents_total()),
-			'coupons' => self::get_coupons_string(WC()->cart->get_coupons()),
-			'currency' => get_woocommerce_currency(),
-			'delivery_address' => self::get_delivery_address(WC()->customer->get_shipping()),
-		];
-		$cart_sync_json = json_encode(self::unset_null_values($cart_sync), JSON_PARTIAL_OUTPUT_ON_ERROR);
-
-		wp_add_inline_script('mailbiz-tracker', "mb_track('cartSync', { cart: $cart_sync_json });");
+		wp_add_inline_script('mailbiz-tracker', $js_code);
 	}
 }
 

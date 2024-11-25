@@ -106,3 +106,8 @@ Copy the code inside the `src/` directory to `mailbiz-woocommerce-tracker.zip` f
 
 https://woocommerce.github.io/code-reference/index.html
 https://wp-kama.com/plugin/woocommerce/function
+
+Hooks
+https://woocommerce.github.io/code-reference/hooks/hooks.html
+https://wp-kama.com/plugin/woocommerce/hook
+https://developer.wordpress.org/apis/hooks/action-reference/

@@ -24,13 +24,18 @@ defined('ABSPATH') || exit;
 //   // Print some warning in the admin dashboard?
 // }
 
-if (is_admin() || (defined('WP_CLI') && WP_CLI)) {
-	require_once __DIR__ . '/admin/mailbiz-admin.php';
-	add_action('init', ['Mailbiz_Admin', 'init']);
+if (!defined('MAILBIZ_PLUGIN_DIR')) {
+	define('MAILBIZ_PLUGIN_DIR', __DIR__);
 }
 
-require_once __DIR__ . '/public/mailbiz-public.php';
-add_action('init', ['Mailbiz_Public', 'init']);
+if (is_admin() || (defined('WP_CLI') && WP_CLI)) {
+	require_once MAILBIZ_PLUGIN_DIR . '/admin/mailbiz-admin.php';
+	add_action('init', ['Mailbiz_Admin', 'init']);
+} else {
+	require_once MAILBIZ_PLUGIN_DIR . '/public/mailbiz-public.php';
+	add_action('init', ['Mailbiz_Public', 'init']);
+}
+
 
 // Check if configuration is set
 
