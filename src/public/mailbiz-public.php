@@ -36,7 +36,9 @@ class Mailbiz_Public
 		add_action('wp_login', ['Mailbiz_Public', 'wp_login']);
 		add_action('woocommerce_new_order', ['Mailbiz_Public', 'woocommerce_new_order']);
 
+		add_action('wp_footer', ['Mailbiz_Public', 'account_sync_event']);
 		add_action('wp_footer', ['Mailbiz_Public', 'cart_sync_event']);
+
 		add_action('wp_footer', ['Mailbiz_Public', 'enqueue_tracker']);
 
 		// woocommerce_before_shop_loop
@@ -107,12 +109,6 @@ class Mailbiz_Public
 
 	public static function cart_sync_event()
 	{
-		// echo 'A';
-		// if (self::$count === 0) {
-		// 	self::$count = 1;
-		// 	return;
-		// }
-
 		$cart_sync = Mailbiz_Tracker::get_cart_sync();
 		if (!$cart_sync) {
 			return;
@@ -120,6 +116,18 @@ class Mailbiz_Public
 
 		$cart_sync_json = json_encode($cart_sync, JSON_PARTIAL_OUTPUT_ON_ERROR);
 		$js_code = "mb_track('cartSync', $cart_sync_json);";
+
+		wp_add_inline_script('mailbiz-tracker', $js_code);
+	}
+
+	public static function account_sync_event(): void {
+		$account_sync = Mailbiz_Tracker::get_account_sync();
+		if (!$account_sync) {
+			return;
+		}
+
+		$cart_sync_json = json_encode($account_sync, JSON_PARTIAL_OUTPUT_ON_ERROR);
+		$js_code = "mb_track('accountSync', $cart_sync_json);";
 
 		wp_add_inline_script('mailbiz-tracker', $js_code);
 	}

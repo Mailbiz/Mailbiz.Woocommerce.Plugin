@@ -1,7 +1,9 @@
 <?php
 
+
 class Mailbiz_Tracker
 {
+  #region [cart.sync]
   public static function get_image($data)
   {
     $image_id = $data->get_image_id();
@@ -67,17 +69,9 @@ class Mailbiz_Tracker
 
   public static function get_coupons_string($coupons)
   {
-    $coupons_string = '';
-    // Avoid implode to improve compatibility with PHP
-    foreach ($coupons as $_ => $coupon) {
-      $code = $coupon->get_code();
-      if ($coupons_string) {
-        $coupons_string .= ", $code";
-      } else {
-        $coupons_string .= $code;
-      }
-    }
-    return $coupons_string;
+    return implode(', ', array_map(function ($item) {
+      return $item->get_code();
+    }, $coupons));
   }
 
   public static function get_delivery_address($shipping)
@@ -105,33 +99,60 @@ class Mailbiz_Tracker
       return $delivery_address;
     }
     return null;
-
-    // address_number?: string;
   }
 
-  public static function get_cart_sync() {
+  public static function get_cart_sync()
+  {
     $cart = WC()->cart;
     $cart_sync = [
-			'cart_id' => $cart->get_cart_hash(),
-			'items' => self::get_items($cart->get_cart()),
-			'subtotal' => floatval($cart->get_subtotal()),
-			'freight' => floatval($cart->get_shipping_total()),
-			'discounts' => floatval($cart->get_discount_total()),
-			'tax' => floatval($cart->get_taxes_total()),
-			'total' => floatval($cart->get_cart_contents_total()),
-			'coupons' => self::get_coupons_string($cart->get_coupons()),
-			'currency' => get_woocommerce_currency(),
-			'delivery_address' => self::get_delivery_address(WC()->customer->get_shipping()),
-		];
+      'cart_id' => $cart->get_cart_hash(),
+      'items' => self::get_items($cart->get_cart()),
+      'subtotal' => floatval($cart->get_subtotal()),
+      'freight' => floatval($cart->get_shipping_total()),
+      'discounts' => floatval($cart->get_discount_total()),
+      'tax' => floatval($cart->get_taxes_total()),
+      'total' => floatval($cart->get_cart_contents_total()),
+      'coupons' => self::get_coupons_string($cart->get_coupons()),
+      'currency' => get_woocommerce_currency(),
+      'delivery_address' => self::get_delivery_address(WC()->customer->get_shipping()),
+    ];
     if ($cart_sync['cart_id'] === '') {
       return null;
     }
 
-		$cart_sync = self::unset_null_values($cart_sync);
+    $cart_sync = self::unset_null_values($cart_sync);
     $cart_sync_event = ['cart' => $cart_sync];
     return $cart_sync_event;
   }
+  #endregion
 
+  #region [account.sync]
+  public static function get_name($customer)
+  {
+    $name = trim(implode(' ', [$customer->get_first_name(), $customer->get_last_name()]));
+    $billing_name = trim(implode(' ', [$customer->get_billing_first_name(), $customer->get_billing_last_name()]));
+    $shipping_name = trim(implode(' ', [$customer->get_shipping_first_name(), $customer->get_shipping_last_name()]));
+    return $name ?: $billing_name ?: $shipping_name ?: null;
+  }
+  public static function get_account_sync()
+  {
+    $customer = WC()->customer;
+    $account_sync = [
+      'email' => $customer->get_email() ?: $customer->get_billing_email() ?: null,
+      'phone' => $customer->get_billing_phone() ?: $customer->get_shipping_phone() ?: null,
+      'name' => self::get_name($customer),
+      'created_at' => $customer->get_date_created(),
+    ];
+    if (!$account_sync['email']) {
+      return null;
+    }
+
+    $account_sync = self::unset_null_values($account_sync);
+    $account_sync_event = ['user' => $account_sync];
+    return $account_sync_event;
+  }
+  #endregion
+  
   public static function unset_null_values($array)
   {
     foreach ($array as $key => $value) {
