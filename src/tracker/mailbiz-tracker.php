@@ -1,6 +1,5 @@
 <?php
 
-
 class Mailbiz_Tracker
 {
   #region [generic]
@@ -165,6 +164,12 @@ class Mailbiz_Tracker
   #endregion
 
   #region [product.view]
+  public static function get_product_simple_attributes($attributes)
+  {
+    return array_map(function ($a) {
+      return $a->get_options()[$a->get_position()];
+    }, $attributes);
+  }
   public static function get_variants($product_id, $product)
   {
     if ($product instanceof WC_Product_Variable) {
@@ -179,7 +184,11 @@ class Mailbiz_Tracker
           'properties' => $v->get_attributes(),
           // 'recovery_properties' => [],
         ];
-      }, wc_get_products(['parent' => $product_id, 'type' => 'variation']));
+      }, wc_get_products([
+          'parent' => $product_id,
+          'type' => 'variation',
+          'limit' => 100,
+        ]));
     }
     if ($product instanceof WC_Product_Simple) {
       return [
@@ -190,7 +199,7 @@ class Mailbiz_Tracker
           'price_from' => floatval($product->get_regular_price()),
           'image_url' => self::get_image($product),
           'url' => $product->get_permalink(),
-          'properties' => $product->get_attributes(),
+          'properties' => self::get_product_simple_attributes($product->get_attributes()),
           // 'recovery_properties' => [],
         ]
       ];
@@ -216,39 +225,6 @@ class Mailbiz_Tracker
     $product_view = self::unset_null_values($product_view);
     $product_view_event = ['product' => $product_view];
     return $product_view_event;
-
-    // NÃO ESTÁ INDO TODAS AS VARIAÇÕES EM UM PRODUTO COM VARIAÇÃO !!
-    // NÃO ESTÁ INDO AS PROPERTIES EM UM PRODUTO SEM VARIAÇÃO !!
-
-
-    // $post_type = get_post_type($post_id);
-    // global $product;
-    // global $posts;
-    // $posts->get_id
-    // $customer = WC()->customer;
-    // $account_sync = Mailbiz_Tracker::get_account_sync();
-    // if (!$account_sync) {
-    // 	return;
-    // }
-
-    // $cart_sync_json = json_encode($account_sync, JSON_PARTIAL_OUTPUT_ON_ERROR);
-    // $js_code = "mb_track('accountSync', $cart_sync_json);";
-
-    // wp_add_inline_script('mailbiz-tracker', $js_code);
-
-
-
-
-    // stock?: number;
-    // available?: boolean;
-    // sku: string;
-    // name?: string;
-    // price?: number;
-    // price_from?: number;
-    // image_url?: string;
-    // url?: string;
-    // properties?: ProductPropertiesEvent;
-    // recovery_properties?: ProductPropertiesEvent;
   }
   #endregion
 
