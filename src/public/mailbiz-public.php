@@ -38,6 +38,7 @@ class Mailbiz_Public
 
 		add_action('wp_footer', ['Mailbiz_Public', 'account_sync_event']);
 		add_action('wp_footer', ['Mailbiz_Public', 'cart_sync_event']);
+		add_action('wp_footer', ['Mailbiz_Public', 'product_view_event']);
 
 		add_action('wp_footer', ['Mailbiz_Public', 'enqueue_tracker']);
 
@@ -130,6 +131,19 @@ class Mailbiz_Public
 		$js_code = "mb_track('accountSync', $cart_sync_json);";
 
 		wp_add_inline_script('mailbiz-tracker', $js_code);
+	}
+
+	public static function product_view_event(): void {
+		$product_view = Mailbiz_Tracker::get_product_view();
+		if (!$product_view) {
+			return;
+		}
+	
+		$product_view_json = json_encode($product_view, JSON_PARTIAL_OUTPUT_ON_ERROR);
+		$js_code = "mb_track('productView', $product_view_json);";
+	
+		wp_add_inline_script('mailbiz-tracker', $js_code);
+		
 	}
 }
 

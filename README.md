@@ -90,10 +90,9 @@ Copy the code inside the `src/` directory to `mailbiz-woocommerce-tracker.zip` f
 
 ## Compatibility
 
-- WordPress: 1.5.0 (get_option added)
 - WordPress: 4.1.0 (script_loader_tag added)
-- PHP: 4.3.0 (file_get_contents added)
-- WooCommerce: 1.0 (wc_get_product_category_list added)
+- PHP: 5.3.0 (use of "use" to make variable available inside closure added)
+- WooCommerce: 3.0 (wc_get_products added)
 
 #### Versions used for development
 

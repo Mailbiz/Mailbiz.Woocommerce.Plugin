@@ -3,22 +3,7 @@
 
 class Mailbiz_Tracker
 {
-  #region [cart.sync]
-  public static function get_image($data)
-  {
-    $image_id = $data->get_image_id();
-    if (!isset($image_id)) {
-      return null;
-    }
-
-    $image = wp_get_attachment_image_src($image_id, 'large');
-    if (!isset($image[0])) {
-      return null;
-    }
-
-    return $image[0];
-  }
-
+  #region [generic]
   public static function get_category($product_id)
   {
     $categories = get_the_terms($product_id, 'product_cat');
@@ -32,6 +17,32 @@ class Mailbiz_Tracker
     return $category->name;
   }
 
+  public static function get_image($object_with_get_image_id)
+  {
+    if (!method_exists($object_with_get_image_id, 'get_image_id')) {
+      return null;
+    }
+
+    $image_id = $object_with_get_image_id->get_image_id();
+    if (!isset($image_id)) {
+      return null;
+    }
+
+    $image = wp_get_attachment_image_src($image_id, 'large');
+    if (!isset($image[0])) {
+      return null;
+    }
+
+    return $image[0];
+  }
+
+  public static function compose_sku($product_id, $id)
+  {
+    return $product_id . '_' . $id;
+  }
+  #endregion
+
+  #region [cart.sync]
   public static function get_brand($product_id)
   {
     $possible_brand_taxonomies = ['product_brand', 'yith_product_brand', 'pa_brand'];
@@ -51,7 +62,7 @@ class Mailbiz_Tracker
       $data = $item['data'];
       $items[] = self::unset_null_values([
         'product_id' => strval($item['product_id']),
-        'sku' => $item['product_id'] . "_" . $data->get_id(),
+        'sku' => self::compose_sku($item['product_id'], $data->get_id()),
         'name' => $data->get_name(),
         'category' => self::get_category($item['product_id']),
         'brand' => self::get_brand($item['product_id']),
@@ -61,7 +72,7 @@ class Mailbiz_Tracker
         'url' => get_permalink($data->get_id()),
         'image_url' => self::get_image($data),
         'properties' => $data->get_attributes(),
-        // 'recovery_properties'
+        // 'recovery_properties' => [],
       ]);
     }
     return $items;
@@ -152,7 +163,95 @@ class Mailbiz_Tracker
     return $account_sync_event;
   }
   #endregion
-  
+
+  #region [product.view]
+  public static function get_variants($product_id, $product)
+  {
+    if ($product instanceof WC_Product_Variable) {
+      return array_map(function ($v) use ($product_id) {
+        return [
+          'sku' => self::compose_sku($product_id, $v->get_id()),
+          'name' => $v->get_name(),
+          'price' => floatval($v->get_price()),
+          'price_from' => floatval($v->get_regular_price()),
+          'image_url' => self::get_image($v),
+          'url' => $v->get_permalink(),
+          'properties' => $v->get_attributes(),
+          // 'recovery_properties' => [],
+        ];
+      }, wc_get_products(['parent' => $product_id, 'type' => 'variation']));
+    }
+    if ($product instanceof WC_Product_Simple) {
+      return [
+        [
+          'sku' => self::compose_sku($product_id, $product->get_id()),
+          'name' => $product->get_name(),
+          'price' => floatval($product->get_price()),
+          'price_from' => floatval($product->get_regular_price()),
+          'image_url' => self::get_image($product),
+          'url' => $product->get_permalink(),
+          'properties' => $product->get_attributes(),
+          // 'recovery_properties' => [],
+        ]
+      ];
+    }
+    return null;
+  }
+
+  public static function get_product_view()
+  {
+    $post_id = get_the_ID();
+    $product = wc_get_product($post_id);
+    if (!$product) {
+      return null;
+    }
+
+    $product_id = $post_id;
+    $product_view = [
+      'product_id' => strval($product_id),
+      'url' => $product->get_permalink(),
+      'category' => self::get_category($product_id),
+      'variants' => self::get_variants($product_id, $product),
+    ];
+    $product_view = self::unset_null_values($product_view);
+    $product_view_event = ['product' => $product_view];
+    return $product_view_event;
+
+    // NÃO ESTÁ INDO TODAS AS VARIAÇÕES EM UM PRODUTO COM VARIAÇÃO !!
+    // NÃO ESTÁ INDO AS PROPERTIES EM UM PRODUTO SEM VARIAÇÃO !!
+
+
+    // $post_type = get_post_type($post_id);
+    // global $product;
+    // global $posts;
+    // $posts->get_id
+    // $customer = WC()->customer;
+    // $account_sync = Mailbiz_Tracker::get_account_sync();
+    // if (!$account_sync) {
+    // 	return;
+    // }
+
+    // $cart_sync_json = json_encode($account_sync, JSON_PARTIAL_OUTPUT_ON_ERROR);
+    // $js_code = "mb_track('accountSync', $cart_sync_json);";
+
+    // wp_add_inline_script('mailbiz-tracker', $js_code);
+
+
+
+
+    // stock?: number;
+    // available?: boolean;
+    // sku: string;
+    // name?: string;
+    // price?: number;
+    // price_from?: number;
+    // image_url?: string;
+    // url?: string;
+    // properties?: ProductPropertiesEvent;
+    // recovery_properties?: ProductPropertiesEvent;
+  }
+  #endregion
+
   public static function unset_null_values($array)
   {
     foreach ($array as $key => $value) {
