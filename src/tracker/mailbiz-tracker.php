@@ -207,6 +207,13 @@ class Mailbiz_Tracker
       return null;
     }
 
+    $queried_object = get_queried_object();
+    // This is to check if we are getting a single
+    // product and not a list or search.
+    if (!$queried_object instanceof WP_Post) {
+      return null;
+    }
+
     $product_id = $post_id;
     $product_view = [
       'product_id' => strval($product_id),

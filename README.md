@@ -87,7 +87,7 @@ Setting the `XDEBUG_CONFIG` environment variable in the `docker-compose.yml` fil
 - Run `docker compose up --build -d` again.
 
 ### Testing
-- Navigate to a product page and add it to the cart. Events should be tracked.
+- Navigate to a product page and add it to the cart. Events should be tracked upon page reload.
 
 ## Project Structure
 
@@ -111,9 +111,9 @@ Copy the code inside the `src/` directory to `mailbiz-woocommerce-tracker.zip` f
 
 ## Compatibility
 
-- WordPress: 4.1.0 (script_loader_tag added)
-- PHP: 5.3.0 (use of "use" to make variable available inside closure added)
-- WooCommerce: 3.0 (wc_get_products added)
+- WordPress: 4.1.0 (`script_loader_tag` added)
+- PHP: 5.3.0 (use of `use` to make variable available inside closure added)
+- WooCommerce: 3.0 (`wc_get_products` added)
 
 #### Versions used for development
 
@@ -124,6 +124,7 @@ Copy the code inside the `src/` directory to `mailbiz-woocommerce-tracker.zip` f
 
 #### Docs
 
+Docs
 https://woocommerce.github.io/code-reference/index.html
 https://wp-kama.com/plugin/woocommerce/function
 
