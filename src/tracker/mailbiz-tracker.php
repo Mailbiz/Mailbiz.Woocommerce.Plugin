@@ -16,6 +16,18 @@ class Mailbiz_Tracker
     return $category->name;
   }
 
+  public static function get_brand($product_id)
+  {
+    $possible_brand_taxonomies = ['product_brand', 'yith_product_brand', 'pa_brand'];
+    foreach ($possible_brand_taxonomies as $taxonomy) {
+      $brands = get_the_terms($product_id, $taxonomy);
+      if (!is_wp_error($brands) && isset($brands[0])) {
+        return $brands[0];
+      }
+    }
+    return null;
+  }
+
   public static function get_image($object_with_get_image_id)
   {
     if (!method_exists($object_with_get_image_id, 'get_image_id')) {
@@ -39,43 +51,6 @@ class Mailbiz_Tracker
   {
     return $product_id . '_' . $id;
   }
-  #endregion
-
-  #region [cart.sync]
-  public static function get_brand($product_id)
-  {
-    $possible_brand_taxonomies = ['product_brand', 'yith_product_brand', 'pa_brand'];
-    foreach ($possible_brand_taxonomies as $taxonomy) {
-      $brands = get_the_terms($product_id, $taxonomy);
-      if (!is_wp_error($brands) && isset($brands[0])) {
-        return $brands[0];
-      }
-    }
-    return null;
-  }
-
-  public static function get_items($cart_items)
-  {
-    $items = [];
-    foreach ($cart_items as $item) {
-      $data = $item['data'];
-      $items[] = self::unset_null_values([
-        'product_id' => strval($item['product_id']),
-        'sku' => self::compose_sku($item['product_id'], $data->get_id()),
-        'name' => $data->get_name(),
-        'category' => self::get_category($item['product_id']),
-        'brand' => self::get_brand($item['product_id']),
-        'price' => floatval($data->get_price()),
-        'price_from' => floatval($data->get_regular_price()),
-        'quantity' => $item['quantity'],
-        'url' => get_permalink($data->get_id()),
-        'image_url' => self::get_image($data),
-        'properties' => $data->get_attributes(),
-        // 'recovery_properties' => [],
-      ]);
-    }
-    return $items;
-  }
 
   public static function get_coupons_string($coupons)
   {
@@ -83,40 +58,58 @@ class Mailbiz_Tracker
       return $item->get_code();
     }, $coupons));
   }
+  #endregion
 
-  public static function get_delivery_address($shipping)
+  #region [cart.sync]
+  public static function get_cart_items($wc_items)
   {
-    $delivery_address = [];
-    if ($shipping['postcode']) {
-      $delivery_address['postal_code'] = $shipping['postcode'];
+    $items = [];
+    foreach ($wc_items as $item) {
+      $data = $item['data'];
+      $product_id = strval($item['product_id']);
+      $id = strval($data->get_id());
+      $is_variation = $product_id !== $id;
+      $items[] = self::unset_null_values([
+        'product_id' => $product_id,
+        'sku' => self::compose_sku($product_id, $id),
+        'name' => $data->get_name(),
+        'category' => self::get_category($product_id),
+        'brand' => self::get_brand($product_id),
+        'price' => floatval($data->get_price()),
+        'price_from' => floatval($data->get_regular_price()),
+        'quantity' => $item['quantity'],
+        'url' => $data->get_permalink(),
+        'image_url' => self::get_image($data),
+        'properties' => $is_variation ? $data->get_attributes() : self::get_product_simple_attributes($data->get_attributes()),
+        // 'recovery_properties' => [],
+      ]);
     }
-    if ($shipping['address_1']) {
-      $delivery_address['address_line1'] = $shipping['address_1'];
-    }
-    if ($shipping['address_2']) {
-      $delivery_address['address_line2'] = $shipping['address_2'];
-    }
-    if ($shipping['city']) {
-      $delivery_address['city'] = $shipping['city'];
-    }
-    if ($shipping['state']) {
-      $delivery_address['state'] = $shipping['state'];
-    }
-    if ($shipping['country']) {
-      $delivery_address['country'] = $shipping['country'];
-    }
-    if (count($delivery_address) > 0) {
-      return $delivery_address;
-    }
-    return null;
+    return $items;
   }
 
-  public static function get_cart_sync()
+  public static function get_cart_delivery_address($shipping)
+  {
+    $delivery_address = [
+      'postal_code' => $shipping['postcode'] ?: null,
+      'address_line1' => $shipping['address_1'] ?: null,
+      'address_line2' => $shipping['address_2'] ?: null,
+      'city' => $shipping['city'] ?: null,
+      'state' => $shipping['state'] ?: null,
+      'country' => $shipping['country'] ?: null,
+    ];
+    $delivery_address = self::unset_null_values($delivery_address);
+    if (count($delivery_address) === 0) {
+      return null;
+    }
+    return $delivery_address;
+  }
+
+  public static function get_cart_sync_event()
   {
     $cart = WC()->cart;
     $cart_sync = [
       'cart_id' => $cart->get_cart_hash(),
-      'items' => self::get_items($cart->get_cart()),
+      'items' => self::get_cart_items($cart->get_cart()),
       'subtotal' => floatval($cart->get_subtotal()),
       'freight' => floatval($cart->get_shipping_total()),
       'discounts' => floatval($cart->get_discount_total()),
@@ -124,7 +117,7 @@ class Mailbiz_Tracker
       'total' => floatval($cart->get_cart_contents_total()),
       'coupons' => self::get_coupons_string($cart->get_coupons()),
       'currency' => get_woocommerce_currency(),
-      'delivery_address' => self::get_delivery_address(WC()->customer->get_shipping()),
+      'delivery_address' => self::get_cart_delivery_address(WC()->customer->get_shipping()),
     ];
     if ($cart_sync['cart_id'] === '') {
       return null;
@@ -144,14 +137,13 @@ class Mailbiz_Tracker
     $shipping_name = trim(implode(' ', [$customer->get_shipping_first_name(), $customer->get_shipping_last_name()]));
     return $name ?: $billing_name ?: $shipping_name ?: null;
   }
-  public static function get_account_sync()
+  public static function get_account_sync_event()
   {
     $customer = WC()->customer;
     $account_sync = [
       'email' => $customer->get_email() ?: $customer->get_billing_email() ?: null,
       'phone' => $customer->get_billing_phone() ?: $customer->get_shipping_phone() ?: null,
       'name' => self::get_name($customer),
-      'created_at' => $customer->get_date_created(),
     ];
     if (!$account_sync['email']) {
       return null;
@@ -170,9 +162,9 @@ class Mailbiz_Tracker
       return $a->get_options()[$a->get_position()];
     }, $attributes);
   }
-  public static function get_variants($product_id, $product)
+  public static function get_variants($product_id, $wc_product)
   {
-    if ($product instanceof WC_Product_Variable) {
+    if ($wc_product instanceof WC_Product_Variable) {
       return array_map(function ($v) use ($product_id) {
         return [
           'sku' => self::compose_sku($product_id, $v->get_id()),
@@ -190,16 +182,16 @@ class Mailbiz_Tracker
           'limit' => 100,
         ]));
     }
-    if ($product instanceof WC_Product_Simple) {
+    if ($wc_product instanceof WC_Product_Simple) {
       return [
         [
-          'sku' => self::compose_sku($product_id, $product->get_id()),
-          'name' => $product->get_name(),
-          'price' => floatval($product->get_price()),
-          'price_from' => floatval($product->get_regular_price()),
-          'image_url' => self::get_image($product),
-          'url' => $product->get_permalink(),
-          'properties' => self::get_product_simple_attributes($product->get_attributes()),
+          'sku' => self::compose_sku($product_id, $wc_product->get_id()),
+          'name' => $wc_product->get_name(),
+          'price' => floatval($wc_product->get_price()),
+          'price_from' => floatval($wc_product->get_regular_price()),
+          'image_url' => self::get_image($wc_product),
+          'url' => $wc_product->get_permalink(),
+          'properties' => self::get_product_simple_attributes($wc_product->get_attributes()),
           // 'recovery_properties' => [],
         ]
       ];
@@ -207,7 +199,7 @@ class Mailbiz_Tracker
     return null;
   }
 
-  public static function get_product_view()
+  public static function get_product_view_event()
   {
     $post_id = get_the_ID();
     $product = wc_get_product($post_id);
@@ -220,11 +212,103 @@ class Mailbiz_Tracker
       'product_id' => strval($product_id),
       'url' => $product->get_permalink(),
       'category' => self::get_category($product_id),
+      'brand' => self::get_brand($product_id),
       'variants' => self::get_variants($product_id, $product),
     ];
     $product_view = self::unset_null_values($product_view);
     $product_view_event = ['product' => $product_view];
     return $product_view_event;
+  }
+  #endregion
+
+  #region [order.complete]
+  public static function get_order_items($wc_order_items)
+  {
+    $items = [];
+    foreach ($wc_order_items as $order_item) {
+      $product_id = strval($order_item->get_product_id());
+      $product = $order_item->get_product();
+      $id = strval($product->get_id());
+      $is_variation = $product_id !== $id;
+      $items[] = self::unset_null_values([
+        'product_id' => $product_id,
+        'category' => self::get_category($product_id),
+        'brand' => self::get_brand($product_id),
+        'quantity' => $order_item->get_quantity(),
+        'sku' => self::compose_sku($product_id, $id),
+        'name' => $order_item->get_name(),
+        'price' => floatval($product->get_price()),
+        'price_from' => floatval($product->get_regular_price()),
+        'url' => $product->get_permalink(),
+        'image_url' => self::get_image($product),
+        'properties' => $is_variation ? $product->get_attributes() : self::get_product_simple_attributes($product->get_attributes()),
+      ]);
+    }
+    return $items;
+  }
+
+  public static function get_order_delivery_address($order)
+  {
+    $delivery_address = [
+      'postal_code' => $order->get_shipping_postcode() ?: null,
+      'address_line1' => $order->get_shipping_address_1() ?: null,
+      'address_line2' => $order->get_shipping_address_2() ?: null,
+      'city' => $order->get_shipping_city() ?: null,
+      'state' => $order->get_shipping_state() ?: null,
+      'country' => $order->get_shipping_country() ?: null,
+    ];
+    $delivery_address = self::unset_null_values($delivery_address);
+    if (count($delivery_address) === 0) {
+      return null;
+    }
+    return $delivery_address;
+  }
+
+  public static function get_payment_methods($order)
+  {
+    $payment_method = [
+      'type' => $order->get_payment_method_title() ?: 'Unknown',
+      'amount' => floatval($order->get_total()),
+    ];
+    if (!$payment_method['amount']) {
+      return null;
+    }
+    return [$payment_method];
+  }
+
+  public static function get_delivery_methods($shipping_methods)
+  {
+    $delivery_methods = [];
+    foreach ($shipping_methods as $shipping_method) {
+      $delivery_methods[] = [
+        'type' => $shipping_method->get_name() ?: 'Unknown',
+        'amount' => floatval($shipping_method->get_total()),
+      ];
+    }
+    return $delivery_methods;
+  }
+
+  public static function get_order_complete_event($order_id)
+  {
+    $order = wc_get_order($order_id);
+    $order_complete = [
+      'order_id' => $order_id,
+      'cart_id' => $order->get_cart_hash(),
+      'subtotal' => floatval($order->get_subtotal()),
+      'freight' => floatval($order->get_shipping_total()),
+      'tax' => floatval($order->get_total_tax()),
+      'discounts' => floatval($order->get_total_discount()),
+      'total' => floatval($order->get_total()),
+      'coupons' => self::get_coupons_string($order->get_coupons()),
+      'currency' => $order->get_currency(),
+      'payment_methods' => self::get_payment_methods($order),
+      'delivery_methods' => self::get_delivery_methods($order->get_shipping_methods()),
+      'delivery_address' => self::get_order_delivery_address($order),
+      'items' => self::get_order_items($order->get_items()),
+    ];
+    $order_complete = self::unset_null_values($order_complete);
+    $order_complete_event = ['order' => $order_complete];
+    return $order_complete_event;
   }
   #endregion
 

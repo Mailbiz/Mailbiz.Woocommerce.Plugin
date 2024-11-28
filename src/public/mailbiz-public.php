@@ -5,6 +5,10 @@ class Mailbiz_Public
 
 	private static $hooks_initialized = false;
 	private static $count = 0; // TODO: remove
+	private static $priority = [
+		'default' => 10,
+		'low' => 11
+	];
 
 	public static function init()
 	{
@@ -34,13 +38,13 @@ class Mailbiz_Public
 
 		add_action('woocommerce_add_to_cart', ['Mailbiz_Public', 'woocommerce_add_to_cart']);
 		add_action('wp_login', ['Mailbiz_Public', 'wp_login']);
-		add_action('woocommerce_new_order', ['Mailbiz_Public', 'woocommerce_new_order']);
 
 		add_action('wp_footer', ['Mailbiz_Public', 'account_sync_event']);
 		add_action('wp_footer', ['Mailbiz_Public', 'cart_sync_event']);
 		add_action('wp_footer', ['Mailbiz_Public', 'product_view_event']);
+		add_action('wp_footer', ['Mailbiz_Public', 'order_complete_event']);
 
-		add_action('wp_footer', ['Mailbiz_Public', 'enqueue_tracker']);
+		add_action('wp_footer', ['Mailbiz_Public', 'enqueue_tracker'], self::$priority['low']);
 
 		// woocommerce_before_shop_loop
 
@@ -110,7 +114,7 @@ class Mailbiz_Public
 
 	public static function cart_sync_event()
 	{
-		$cart_sync = Mailbiz_Tracker::get_cart_sync();
+		$cart_sync = Mailbiz_Tracker::get_cart_sync_event();
 		if (!$cart_sync) {
 			return;
 		}
@@ -121,8 +125,9 @@ class Mailbiz_Public
 		wp_add_inline_script('mailbiz-tracker', $js_code);
 	}
 
-	public static function account_sync_event(): void {
-		$account_sync = Mailbiz_Tracker::get_account_sync();
+	public static function account_sync_event(): void
+	{
+		$account_sync = Mailbiz_Tracker::get_account_sync_event();
 		if (!$account_sync) {
 			return;
 		}
@@ -133,17 +138,49 @@ class Mailbiz_Public
 		wp_add_inline_script('mailbiz-tracker', $js_code);
 	}
 
-	public static function product_view_event(): void {
-		$product_view = Mailbiz_Tracker::get_product_view();
+	public static function product_view_event(): void
+	{
+		$product_view = Mailbiz_Tracker::get_product_view_event();
 		if (!$product_view) {
 			return;
 		}
-	
+
 		$product_view_json = json_encode($product_view, JSON_PARTIAL_OUTPUT_ON_ERROR);
 		$js_code = "mb_track('productView', $product_view_json);";
-	
+
 		wp_add_inline_script('mailbiz-tracker', $js_code);
-		
+
+	}
+
+	public static function order_complete_event(): void
+	{
+		$order_id = $_GET['order-received'];
+		if (!$order_id) {
+			return;
+		}
+
+		$order_complete = Mailbiz_Tracker::get_order_complete_event($order_id);
+		if (!$order_complete) {
+			return;
+		}
+
+		$order_complete_json = json_encode($order_complete, JSON_PARTIAL_OUTPUT_ON_ERROR);
+		$js_code = "mb_track('orderComplete', $order_complete_json);";
+
+		wp_add_inline_script('mailbiz-tracker', $js_code);
+	}
+
+	public static function process_order_complete_event($order_id): void
+	{
+		$order_complete = Mailbiz_Tracker::get_order_complete_event($order_id);
+		if (!$order_complete) {
+			return;
+		}
+
+		$order_complete_json = json_encode($order_complete, JSON_PARTIAL_OUTPUT_ON_ERROR);
+		$js_code = "mb_track('orderComplete', $order_complete_json);";
+
+		wp_add_inline_script('mailbiz-tracker', $js_code);
 	}
 }
 
