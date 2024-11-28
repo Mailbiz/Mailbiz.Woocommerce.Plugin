@@ -53,12 +53,33 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
   - Find `Mailbiz WooCommerce Tracker` in the installed plugins list
   - Click on `Activate`
 
-#### 7. (optional) Enable WordPress debugging:
+#### 7. Configure the Mailbiz WooCommerce Plugin:
+  - Access `http://localhost:60000/wp-admin/options-general.php?page=mailbiz-woocommerce-tracker`
+  - Enable integrations
+  - Fill in the `Chave de integração` (eg: `111111111111111111111111` or `653a628a7058d778ef8ebe06`)
+  - Save changes
+
+#### 8. (optional) Add a product to the store:
+  - Access `http://localhost:60000/wp-admin/post-new.php?post_type=product`
+  - Fill in product details
+  - Publish the product
+
+<small>It is a good idea to add the maximum amount of data to the product to test every possibility. This includes adding products with and without variations.</small>
+
+#### 9. (optional) Add a payment method:
+  - Access `http://localhost:60000/wp-admin/admin.php?page=wc-admin&task=payments`
+  - Add "Cash on delivery" payment method
+
+#### 10. (optional) Add a shipping method:
+  - Access `http://localhost:60000/wp-admin/admin.php?page=wc-settings&tab=shipping`
+  - Add a "Flat rate" shipping method for a region or all regions
+
+#### 11. (optional) Enable WordPress debugging:
 Set `define('WP_DEBUG', true);` in `docker-volumes/wordpress/wp-config.php` to enable debugging
 
-#### 8. (optional) Configure xdebug (to debug PHP code):
+#### 12. (optional) Configure xdebug (to debug PHP code):
 Setting the `XDEBUG_CONFIG` environment variable in the `docker-compose.yml` file should be enough.
-If this doesn't work, manually enter into the container and set the same options in the `xdebug.ini` file.
+<small>If this doesn't work, manually enter into the container and set the same options in the `xdebug.ini` file.</small>
 
 ### Resetting the WordPress installation
 - Delete the docker container
