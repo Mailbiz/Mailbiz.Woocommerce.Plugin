@@ -39,10 +39,10 @@ class Mailbiz_Public
 		add_action('woocommerce_add_to_cart', ['Mailbiz_Public', 'woocommerce_add_to_cart']);
 		add_action('wp_login', ['Mailbiz_Public', 'wp_login']);
 
+		add_action('woocommerce_thankyou', ['Mailbiz_Public', 'order_complete_event']);
 		add_action('wp_footer', ['Mailbiz_Public', 'account_sync_event']);
 		add_action('wp_footer', ['Mailbiz_Public', 'cart_sync_event']);
 		add_action('wp_footer', ['Mailbiz_Public', 'product_view_event']);
-		add_action('wp_footer', ['Mailbiz_Public', 'order_complete_event']);
 
 		add_action('wp_footer', ['Mailbiz_Public', 'enqueue_tracker'], self::$priority['low']);
 
@@ -72,6 +72,7 @@ class Mailbiz_Public
 		// ?? $data->get_permalink -- pode ser útil para pegar a URL do produto
 
 		// WC()->cart->get_cart_url() -- pegar a URL do carrinho
+		// wc_get_checkout_url()
 	}
 
 	public static function filter_set_script_integration_key($tag, $handle, $src)
@@ -152,9 +153,8 @@ class Mailbiz_Public
 
 	}
 
-	public static function order_complete_event(): void
+	public static function order_complete_event($order_id): void
 	{
-		$order_id = $_GET['order-received'];
 		if (!$order_id) {
 			return;
 		}
