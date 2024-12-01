@@ -183,9 +183,9 @@ class Mailbiz_Public
 	#endregion
 	
 	#region [checkout.step]
-	public static function checkout_step_event($order_id): void
+	public static function checkout_step_event(): void
 	{
-		$checkout_step = Mailbiz_Tracker::get_checkout_step_event($order_id);
+		$checkout_step = Mailbiz_Tracker::get_checkout_step_event();
 		if (!$checkout_step) {
 			return;
 		}

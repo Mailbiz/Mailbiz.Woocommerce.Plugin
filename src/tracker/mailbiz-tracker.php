@@ -329,7 +329,7 @@ class Mailbiz_Tracker
   {
     $is_cart = is_cart();
     $is_checkout = is_checkout();
-    if (!$is_cart && !$is_checkout) {
+    if (!$is_cart && !$is_checkout && !self::$order_id) {
       return null;
     }
 
