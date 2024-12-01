@@ -2,6 +2,7 @@
 
 class Mailbiz_Tracker
 {
+  private static $order_id = null;
   #region [generic]
   public static function get_category($product_id)
   {
@@ -295,6 +296,10 @@ class Mailbiz_Tracker
     return $delivery_methods;
   }
 
+  public static function set_order_id($order_id)
+  {
+    self::$order_id = $order_id;
+  }
   public static function get_order_complete_event($order_id)
   {
     $order = wc_get_order($order_id);
@@ -316,6 +321,42 @@ class Mailbiz_Tracker
     $order_complete = self::unset_null_values($order_complete);
     $order_complete_event = ['order' => $order_complete];
     return $order_complete_event;
+  }
+  #endregion
+
+  #region [checkout.step]
+  public static function get_checkout_step_event()
+  {
+    $is_cart = is_cart();
+    $is_checkout = is_checkout();
+    if (!$is_cart && !$is_checkout) {
+      return null;
+    }
+
+    $checkout_step = [
+      'total_steps' => 3,
+    ];
+
+    if ($is_cart) {
+      $checkout_step['step'] = 1;
+      $checkout_step['step_name'] = 'CART';
+      $checkout_step['cart_id'] = WC()->cart->get_cart_hash();
+    }
+
+    if ($is_checkout && !self::$order_id) {
+      $checkout_step['step'] = 2;
+      $checkout_step['step_name'] = 'CHECKOUT';
+      $checkout_step['cart_id'] = WC()->cart->get_cart_hash();
+    }
+
+    if (self::$order_id) {
+      $checkout_step['step'] = 3;
+      $checkout_step['step_name'] = 'COMPLETE';
+      $checkout_step['cart_id'] = wc_get_order(self::$order_id)->get_cart_hash();
+    }
+
+    $checkout_step_event = ['checkout' => $checkout_step];
+    return $checkout_step_event;
   }
   #endregion
 

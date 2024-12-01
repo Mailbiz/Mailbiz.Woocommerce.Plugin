@@ -4,7 +4,6 @@ class Mailbiz_Public
 {
 
 	private static $hooks_initialized = false;
-	private static $count = 0; // TODO: remove
 	private static $priority = [
 		'default' => 10,
 		'low' => 11
@@ -17,6 +16,7 @@ class Mailbiz_Public
 		}
 	}
 
+	#region [hooks]
 	public static function init_hooks()
 	{
 		self::$hooks_initialized = true;
@@ -43,6 +43,7 @@ class Mailbiz_Public
 		add_action('wp_footer', ['Mailbiz_Public', 'account_sync_event']);
 		add_action('wp_footer', ['Mailbiz_Public', 'cart_sync_event']);
 		add_action('wp_footer', ['Mailbiz_Public', 'product_view_event']);
+		add_action('wp_footer', ['Mailbiz_Public', 'checkout_step_event']);
 
 		add_action('wp_footer', ['Mailbiz_Public', 'enqueue_tracker'], self::$priority['low']);
 
@@ -74,7 +75,9 @@ class Mailbiz_Public
 		// WC()->cart->get_cart_url() -- pegar a URL do carrinho
 		// wc_get_checkout_url()
 	}
+	#endregion
 
+	#region [scripts]
 	public static function filter_set_script_integration_key($tag, $handle, $src)
 	{
 		if ($handle === 'mailbiz-integration-hub') {
@@ -98,6 +101,7 @@ class Mailbiz_Public
 	{
 		wp_enqueue_script('mailbiz-tracker');
 	}
+	#endregion
 
 	public static function woocommerce_add_to_cart()
 	{
@@ -113,6 +117,7 @@ class Mailbiz_Public
 		wp_add_inline_script('mailbiz-tracker', 'console.log("MAILBIZ:woocommerce_new_order")');
 	}
 
+	#region [cart.sync]
 	public static function cart_sync_event()
 	{
 		$cart_sync = Mailbiz_Tracker::get_cart_sync_event();
@@ -125,7 +130,9 @@ class Mailbiz_Public
 
 		wp_add_inline_script('mailbiz-tracker', $js_code);
 	}
-
+	#endregion
+	
+	#region [account.sync]
 	public static function account_sync_event(): void
 	{
 		$account_sync = Mailbiz_Tracker::get_account_sync_event();
@@ -139,6 +146,7 @@ class Mailbiz_Public
 		wp_add_inline_script('mailbiz-tracker', $js_code);
 	}
 
+	#region [product.view]
 	public static function product_view_event(): void
 	{
 		$product_view = Mailbiz_Tracker::get_product_view_event();
@@ -152,13 +160,16 @@ class Mailbiz_Public
 		wp_add_inline_script('mailbiz-tracker', $js_code);
 
 	}
+	#endregion
 
+	#region [order.complete]
 	public static function order_complete_event($order_id): void
 	{
 		if (!$order_id) {
 			return;
 		}
 
+		Mailbiz_Tracker::set_order_id($order_id);
 		$order_complete = Mailbiz_Tracker::get_order_complete_event($order_id);
 		if (!$order_complete) {
 			return;
@@ -169,19 +180,22 @@ class Mailbiz_Public
 
 		wp_add_inline_script('mailbiz-tracker', $js_code);
 	}
-
-	public static function process_order_complete_event($order_id): void
+	#endregion
+	
+	#region [checkout.step]
+	public static function checkout_step_event($order_id): void
 	{
-		$order_complete = Mailbiz_Tracker::get_order_complete_event($order_id);
-		if (!$order_complete) {
+		$checkout_step = Mailbiz_Tracker::get_checkout_step_event($order_id);
+		if (!$checkout_step) {
 			return;
 		}
 
-		$order_complete_json = json_encode($order_complete, JSON_PARTIAL_OUTPUT_ON_ERROR);
-		$js_code = "mb_track('orderComplete', $order_complete_json);";
+		$checkout_step_json = json_encode($checkout_step, JSON_PARTIAL_OUTPUT_ON_ERROR);
+		$js_code = "mb_track('checkoutStep', $checkout_step_json);";
 
 		wp_add_inline_script('mailbiz-tracker', $js_code);
 	}
+	#endregion
 }
 
 // get_option()
