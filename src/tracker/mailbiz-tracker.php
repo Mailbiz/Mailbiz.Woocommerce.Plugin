@@ -355,6 +355,10 @@ class Mailbiz_Tracker
       $checkout_step['cart_id'] = wc_get_order(self::$order_id)->get_cart_hash();
     }
 
+    if (!$checkout_step['cart_id']) {
+      return null;
+    }
+
     $checkout_step_event = ['checkout' => $checkout_step];
     return $checkout_step_event;
   }
