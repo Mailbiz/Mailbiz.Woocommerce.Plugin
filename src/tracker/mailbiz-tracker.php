@@ -64,13 +64,15 @@ class Mailbiz_Tracker
   #region [cart.sync]
   public static function get_cart_items($wc_items)
   {
+    $is_cart_page_and_url_might_be_incorrect = is_cart();
+
     $items = [];
     foreach ($wc_items as $item) {
       $data = $item['data'];
       $product_id = strval($item['product_id']);
       $id = strval($data->get_id());
       $is_variation = $product_id !== $id;
-      $items[] = self::unset_null_values([
+      $item_event = self::unset_null_values([
         'product_id' => $product_id,
         'sku' => self::compose_sku($product_id, $id),
         'name' => $data->get_name(),
@@ -82,8 +84,17 @@ class Mailbiz_Tracker
         'url' => $data->get_permalink(),
         'image_url' => self::get_image($data),
         'properties' => $is_variation ? $data->get_attributes() : self::get_product_simple_attributes($data->get_attributes()),
-        // 'recovery_properties' => [],
+        'recovery_properties' => [
+          'variation_id' => $id,
+          'url' => wc_get_cart_url(),
+        ]
       ]);
+
+      if ($is_cart_page_and_url_might_be_incorrect) {
+        unset($item_event['recovery_properties']['url']);
+      }
+
+      $items[] = $item_event;
     }
     return $items;
   }
@@ -167,15 +178,19 @@ class Mailbiz_Tracker
   {
     if ($wc_product instanceof WC_Product_Variable) {
       return array_map(function ($v) use ($product_id) {
+        $id = $v->get_id();
         return [
-          'sku' => self::compose_sku($product_id, $v->get_id()),
+          'sku' => self::compose_sku($product_id, $id),
           'name' => $v->get_name(),
           'price' => floatval($v->get_price()),
           'price_from' => floatval($v->get_regular_price()),
           'image_url' => self::get_image($v),
           'url' => $v->get_permalink(),
           'properties' => $v->get_attributes(),
-          // 'recovery_properties' => [],
+          'recovery_properties' => [
+            'variation_id' => $id,
+            'url' => wc_get_cart_url(),
+          ],
         ];
       }, wc_get_products([
           'parent' => $product_id,
@@ -184,16 +199,20 @@ class Mailbiz_Tracker
         ]));
     }
     if ($wc_product instanceof WC_Product_Simple) {
+      $id = $wc_product->get_id();
       return [
         [
-          'sku' => self::compose_sku($product_id, $wc_product->get_id()),
+          'sku' => self::compose_sku($product_id, $id),
           'name' => $wc_product->get_name(),
           'price' => floatval($wc_product->get_price()),
           'price_from' => floatval($wc_product->get_regular_price()),
           'image_url' => self::get_image($wc_product),
           'url' => $wc_product->get_permalink(),
           'properties' => self::get_product_simple_attributes($wc_product->get_attributes()),
-          // 'recovery_properties' => [],
+          'recovery_properties' => [
+            'variation_id' => $id,
+            'url' => wc_get_cart_url(),
+          ],
         ]
       ];
     }
