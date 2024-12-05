@@ -35,6 +35,7 @@ class Mailbiz_Public
 		}
 
 		require_once MAILBIZ_PLUGIN_DIR . '/tracker/mailbiz-tracker.php';
+		require_once MAILBIZ_PLUGIN_DIR . '/tracker/mailbiz-cart-id.php';
 
 		self::register_tracker();
 

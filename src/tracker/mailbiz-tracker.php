@@ -3,6 +3,7 @@
 class Mailbiz_Tracker
 {
   private static $order_id = null;
+
   #region [generic]
   public static function get_category($product_id)
   {
@@ -118,9 +119,13 @@ class Mailbiz_Tracker
 
   public static function get_cart_sync_event()
   {
+    if (self::$order_id) {
+      return;
+    }
+
     $cart = WC()->cart;
     $cart_sync = [
-      'cart_id' => $cart->get_cart_hash(),
+      'cart_id' => Mailbiz_Cart_Id::get_cart_id(),
       'items' => self::get_cart_items($cart->get_cart()),
       'subtotal' => floatval($cart->get_subtotal()),
       'freight' => floatval($cart->get_shipping_total()),
@@ -131,9 +136,6 @@ class Mailbiz_Tracker
       'currency' => get_woocommerce_currency(),
       'delivery_address' => self::get_cart_delivery_address(WC()->customer->get_shipping()),
     ];
-    if ($cart_sync['cart_id'] === '') {
-      return null;
-    }
 
     $cart_sync = self::unset_null_values($cart_sync);
     $cart_sync_event = ['cart' => $cart_sync];
@@ -336,7 +338,7 @@ class Mailbiz_Tracker
     $order = wc_get_order($order_id);
     $order_complete = [
       'order_id' => $order_id,
-      'cart_id' => $order->get_cart_hash(),
+      'cart_id' => Mailbiz_Cart_Id::get_cart_id(),
       'subtotal' => floatval($order->get_subtotal()),
       'freight' => floatval($order->get_shipping_total()),
       'tax' => floatval($order->get_total_tax()),
@@ -349,6 +351,9 @@ class Mailbiz_Tracker
       'delivery_address' => self::get_order_delivery_address($order),
       'items' => self::get_order_items($order->get_items()),
     ];
+
+    Mailbiz_Cart_Id::generate_new_cart_id();
+
     $order_complete = self::unset_null_values($order_complete);
     $order_complete_event = ['order' => $order_complete];
     return $order_complete_event;
@@ -366,28 +371,22 @@ class Mailbiz_Tracker
 
     $checkout_step = [
       'total_steps' => 3,
+      'cart_id' => Mailbiz_Cart_Id::get_cart_id()
     ];
 
     if ($is_cart) {
       $checkout_step['step'] = 1;
       $checkout_step['step_name'] = 'CART';
-      $checkout_step['cart_id'] = WC()->cart->get_cart_hash();
     }
 
     if ($is_checkout && !self::$order_id) {
       $checkout_step['step'] = 2;
       $checkout_step['step_name'] = 'CHECKOUT';
-      $checkout_step['cart_id'] = WC()->cart->get_cart_hash();
     }
 
     if (self::$order_id) {
       $checkout_step['step'] = 3;
       $checkout_step['step_name'] = 'COMPLETE';
-      $checkout_step['cart_id'] = wc_get_order(self::$order_id)->get_cart_hash();
-    }
-
-    if (!$checkout_step['cart_id']) {
-      return null;
     }
 
     $checkout_step_event = ['checkout' => $checkout_step];
