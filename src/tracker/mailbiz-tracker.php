@@ -222,8 +222,8 @@ class Mailbiz_Tracker
   public static function get_product_view_event()
   {
     $post_id = get_the_ID();
-    $product = wc_get_product($post_id);
-    if (!$product) {
+    $wc_product = wc_get_product($post_id);
+    if (!$wc_product) {
       return null;
     }
 
@@ -234,13 +234,25 @@ class Mailbiz_Tracker
       return null;
     }
 
+    // A group of products. Isn't a real product, can't
+    // ever be added to the cart. Doesn't have variants.
+    if ($wc_product instanceof WC_Product_Grouped) {
+      return null;
+    }
+
+    // External product that can't be sold, doesn't have
+    // a price and can't ever be added to the cart.
+    if ($wc_product instanceof WC_Product_External) {
+      return null;
+    }
+
     $product_id = $post_id;
     $product_view = [
       'product_id' => strval($product_id),
-      'url' => $product->get_permalink(),
+      'url' => $wc_product->get_permalink(),
       'category' => self::get_category($product_id),
       'brand' => self::get_brand($product_id),
-      'variants' => self::get_variants($product_id, $product),
+      'variants' => self::get_variants($product_id, $wc_product),
     ];
     $product_view = self::unset_null_values($product_view);
     $product_view_event = ['product' => $product_view];
