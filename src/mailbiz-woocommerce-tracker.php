@@ -18,6 +18,9 @@ defined('ABSPATH') || exit;
 if (!defined('MAILBIZ_PLUGIN_DIR')) {
 	define('MAILBIZ_PLUGIN_DIR', __DIR__);
 }
+if (!defined('MAILBIZ_PLUGIN_URL')) {
+	define('MAILBIZ_PLUGIN_URL', plugins_url('/mailbiz-woocommerce-tracker'));
+}
 
 if (is_admin() || (defined('WP_CLI') && WP_CLI)) {
 	require_once MAILBIZ_PLUGIN_DIR . '/admin/mailbiz-admin.php';

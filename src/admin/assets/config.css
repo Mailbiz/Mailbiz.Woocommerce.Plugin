@@ -1,0 +1,129 @@
+.mbz-config {
+  padding: 40px 40px 40px 20px;
+  font-size: 13px;
+}
+
+.mbz-config form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.mbz-form {
+  background: #fff;
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.mbz-form hr {
+  flex-shrink: 0;
+  align-self: stretch;
+  min-height: 1px;
+  display: block;
+  height: 0;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid #ebebeb;
+}
+
+.mbz-form-line-switch {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+}
+
+.mbz-form-line-text {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 5px;
+  justify-content: center;
+}
+
+.mbz-text-input-label {
+  font-weight: bold;
+}
+
+.mbz-text-input {
+  width: 100%;
+}
+
+.mbz-text-input input {
+  border: 1px solid #d6d6d6;
+  width: 100%;
+  line-height: 40px;
+  padding: 0 15px;
+}
+
+.mbz-button input {
+  background: #24a1a8;
+  color: #fff;
+  height: 40px;
+  line-height: 14px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 5px;
+  border: 1px solid transparent;
+}
+
+.mbz-button input:hover {
+  cursor: pointer;
+  background: #45afb6;
+}
+
+.mbz-button input:active {
+  background: #1d797e;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.mbz-switch-input input[type="checkbox"] {
+  width: 40px;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 99px;
+  height: 20px;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  transition: 0.25s;
+}
+.mbz-switch-input input[type="checkbox"]::before {
+  content: none;
+  display: none;
+}
+.mbz-switch-input input[type="checkbox"]::after {
+  content: "";
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border-radius: 99px;
+  display: block;
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  transition: 0.25s;
+}
+
+.mbz-switch-input input[type="checkbox"]:checked {
+  background: #24a1a8;
+}
+.mbz-switch-input input[type="checkbox"]:checked::after {
+  left: 23px;
+}
+.mbz-switch-input input[type="checkbox"]:active {
+  border: none;
+}

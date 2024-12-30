@@ -33,7 +33,7 @@ class Mailbiz_Admin
 
 	public static function load_resources()
 	{
-		wp_register_style('mailbiz-config-css', __DIR__ . 'assets/config.css', [], '0.0.1');
+		wp_register_style('mailbiz-config-css', MAILBIZ_PLUGIN_URL . '/admin/assets/config.css', [], '0.1.0');
 		wp_enqueue_style('mailbiz-config-css');
 	}
 
