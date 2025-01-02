@@ -16,8 +16,8 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 
 #### 1. Clone the repository:
   ```sh
-  git clone https://github.com/yourusername/woocommerce-plugin.git
-  cd woocommerce-plugin
+  git clone https://github.com/Mailbiz/Mailbiz.Woocommerce.Plugin
+  cd Mailbiz.Woocommerce.Plugin
   ```
 
 #### 2. Set your .env file
@@ -93,12 +93,10 @@ Setting the `XDEBUG_CONFIG` environment variable in the `docker-compose.yml` fil
 
 - `README.md`: This file.
 - `docker-compose.yml`: Docker Compose configuration file to set up WordPress, MySQL and folder mapping.
-<br>
 - `docker-volumes`: Mapped directories for docker. Not versioned.
 - `docker-volumes/db_data`: Directory for the MySQL database.
 - `docker-volumes/wordpress`: Directory for the WordPress installation.
 - `docker-volumes/plugins`: WordPress plugins folder.
-<br>
 - `src/`: Directory containing the source code for the Mailbiz WooCommerce Tracker. Already mapped to the WordPress plugins folder as `mailbiz-woocommerce-tracker`.
 
 ## Usage
