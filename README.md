@@ -79,7 +79,8 @@ Set `define('WP_DEBUG', true);` in `docker-volumes/wordpress/wp-config.php` to e
 
 #### 12. (optional) Configure xdebug (to debug PHP code):
 - Setup the `XDEBUG_CLIENT_HOST` environment variable. It is used in the `docker-compose.yml` file, in the `XDEBUG_CONFIG` setting.<br />
-*If this doesn't work, manually enter into the container and set the same options described in `XDEBUG_CONFIG` inside the `xdebug.ini` file.*
+*If not working, manually enter into the container and set the same options described in `XDEBUG_CONFIG` inside `xdebug.ini`.*<br />
+*The `xdebug.ini` file can be found at `/usr/local/etc/php/conf.d/xdebug.ini`*
 - Install the [PHP Debug](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug) extension in VSCode.
 - Install the [Xdebug Helper Exgension](https://chromewebstore.google.com/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) in Chrome.
 
