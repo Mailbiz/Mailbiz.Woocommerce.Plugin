@@ -123,13 +123,14 @@ Copy the code inside the `src/` directory to `mailbiz-woocommerce-tracker.zip` f
 - MySQL: 8.0
 - PHP: 8.2.24
 
-#### Docs
+
+## Docs
 
 Docs
-https://woocommerce.github.io/code-reference/index.html
-https://wp-kama.com/plugin/woocommerce/function
+- https://woocommerce.github.io/code-reference/index.html
+- https://wp-kama.com/plugin/woocommerce/function
 
 Hooks
-https://woocommerce.github.io/code-reference/hooks/hooks.html
-https://wp-kama.com/plugin/woocommerce/hook
-https://developer.wordpress.org/apis/hooks/action-reference/
+- https://woocommerce.github.io/code-reference/hooks/hooks.html
+- https://wp-kama.com/plugin/woocommerce/hook
+- https://developer.wordpress.org/apis/hooks/action-reference/
