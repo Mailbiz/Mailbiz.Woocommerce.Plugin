@@ -81,8 +81,8 @@ Set `define('WP_DEBUG', true);` in `docker-volumes/wordpress/wp-config.php` to e
 - Setup the `XDEBUG_CLIENT_HOST` environment variable. It is used in the `docker-compose.yml` file, in the `XDEBUG_CONFIG` setting.<br />
 *If not working, manually enter into the container and set the same options described in `XDEBUG_CONFIG` inside `xdebug.ini`.*<br />
 *The `xdebug.ini` file can be found at `/usr/local/etc/php/conf.d/xdebug.ini`*
-- Install the [PHP Debug](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug) extension in VSCode.
-- Install the [Xdebug Helper](https://chromewebstore.google.com/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension in Chrome.
+- Install the [PHP Debug](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug) extension in VSCode (don't forget to add breakpoints).
+- Install the [Xdebug Helper](https://chromewebstore.google.com/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension in Chrome (don't forget to enable debug).
 
 ### Resetting the WordPress installation
 - Delete the docker container
