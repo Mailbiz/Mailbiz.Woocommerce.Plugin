@@ -43,8 +43,8 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 
 #### 5. Install and activate WooCommerce:
   - Access `http://localhost:60000/wp-admin/plugin-install.php`
-  - Search for `WooCommerce` and click on `Install Now`
-  <small>This might take a few minutes</small>
+  - Search for `WooCommerce` and click on `Install Now` <br />
+  *This might take a few minutes*
   - Click on `Activate`
   - Follow the WooCommerce setup wizard
 
