@@ -82,7 +82,7 @@ Set `define('WP_DEBUG', true);` in `docker-volumes/wordpress/wp-config.php` to e
 *If not working, manually enter into the container and set the same options described in `XDEBUG_CONFIG` inside `xdebug.ini`.*<br />
 *The `xdebug.ini` file can be found at `/usr/local/etc/php/conf.d/xdebug.ini`*
 - Install the [PHP Debug](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug) extension in VSCode.
-- Install the [Xdebug Helper Exgension](https://chromewebstore.google.com/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) in Chrome.
+- Install the [Xdebug Helper](https://chromewebstore.google.com/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension in Chrome.
 
 ### Resetting the WordPress installation
 - Delete the docker container
