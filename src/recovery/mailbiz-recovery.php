@@ -11,6 +11,10 @@ class Mailbiz_Recovery
 
     self::$initialized = true;
 
+    if (!is_plugin_active('woocommerce/woocommerce.php')) {
+      return;
+    }
+
     if (
       get_option('mailbiz_integration_enable') !== 'yes' ||
       get_option('mailbiz_journey_enable') !== 'yes'

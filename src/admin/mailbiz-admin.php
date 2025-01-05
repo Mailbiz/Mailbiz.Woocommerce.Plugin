@@ -14,14 +14,13 @@ class Mailbiz_Admin
 		}
 
 		if (!self::$hooks_initialized) {
+			self::$hooks_initialized = true;
 			self::init_hooks();
 		}
 	}
 
 	public static function init_hooks()
 	{
-		self::$hooks_initialized = true;
-
 		add_action('admin_menu', ['Mailbiz_Admin', 'admin_menu']);
 		add_action('admin_enqueue_scripts', ['Mailbiz_Admin', 'load_resources']);
 	}
@@ -33,7 +32,7 @@ class Mailbiz_Admin
 
 	public static function load_resources()
 	{
-		wp_register_style('mailbiz-config-css', MAILBIZ_PLUGIN_URL . '/admin/assets/config.css', [], '0.1.0');
+		wp_register_style('mailbiz-config-css', MAILBIZ_PLUGIN_URL . '/admin/assets/config.css', [], '1.0.0');
 		wp_enqueue_style('mailbiz-config-css');
 	}
 

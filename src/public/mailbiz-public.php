@@ -23,6 +23,10 @@ class Mailbiz_Public
 	#region [hooks]
 	public static function init_hooks()
 	{
+		if (!is_plugin_active('woocommerce/woocommerce.php')) {
+			return;
+		}
+
 		if (get_option('mailbiz_integration_enable') !== 'yes') {
 			return;
 		}
