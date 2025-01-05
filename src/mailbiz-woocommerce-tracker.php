@@ -2,12 +2,14 @@
 
 /**
  * Plugin Name: Mailbiz WooCommerce Tracker
- * Description: Handles configuration and insertion of scripts for the Mailbiz Tracker in WooCommerce applications.
- * Version: 0.0.1
+ * Description: Handles configuration and insertion of the Mailbiz Tracker in WooCommerce applications.
+ * Version: 1.0.0
  * Author: Mailbiz
  * Author URI: https://mailbiz.com.br
  * Text Domain: mailbiz-woocommerce-tracker
  * Requires Plugins: woocommerce
+ * Requires at least: 4.1
+ * Requires PHP: 5.3
  * 
  * @package Mailbiz WooCommerce Tracker
  */
