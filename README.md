@@ -26,7 +26,7 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 
 #### 3. Start the Docker containers:
   ```sh
-  docker compose up --build -d
+  docker compose up -d
   ```
 
 #### 4. Access your WordPress site:
@@ -74,15 +74,23 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
   - Access `http://localhost:60000/wp-admin/admin.php?page=wc-settings&tab=shipping`
   - Add a "Flat rate" shipping method for a region or all regions
 
-#### 11. (optional) Enable WordPress debugging:
-Set `define('WP_DEBUG', true);` in `docker-volumes/wordpress/wp-config.php` to enable debugging
+#### 11. (optional) Set site visibility:
+  - Access `[http://localhost:60000/wp-admin/admin.php?page=wc-settings&tab=shipping](http://localhost:60000/wp-admin/admin.php?page=wc-settings&tab=site-visibility)`
+  - Set `Live` and save. changes.
 
-#### 12. (optional) Configure xdebug (to debug PHP code):
-- Setup the `XDEBUG_CLIENT_HOST` environment variable. It is used in the `docker-compose.yml` file, in the `XDEBUG_CONFIG` setting.<br />
-*If not working, manually enter into the container and set the same options described in `XDEBUG_CONFIG` inside `xdebug.ini`.*<br />
-*The `xdebug.ini` file can be found at `/usr/local/etc/php/conf.d/xdebug.ini`*
-- Install the [PHP Debug](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug) extension in VSCode (don't forget to add breakpoints).
-- Install the [Xdebug Helper](https://chromewebstore.google.com/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension in Chrome (don't forget to enable debug).
+#### 12. (optional) Enable WordPress debugging:
+  - Set `define('WP_DEBUG', true);` in `docker-volumes/wordpress/wp-config.php` to enable debugging
+
+#### 13. (optional) Configure xdebug (to debug PHP code):
+  - Set the `XDEBUG_CLIENT_HOST` environment variable as your internal IP.
+  - Also Rebuild docker images as this variable is used in `docker-compose.yml`: `docker compose up --build -d`
+  - Install the [PHP Debug](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug) extension in VSCode (**don't forget to add breakpoints**).
+  - Install the [Xdebug Helper](https://chromewebstore.google.com/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension in Chrome (**don't forget to enable debug**).
+
+*If debug not working, you can:*
+  - Set the `XDEBUG_LOG_LEVEL` environment variable to `7` and rebuild image.
+  - Check `/tmp/xdebug.log` inside container.
+  - Check docs: https://xdebug.org/docs/
 
 ### Resetting the WordPress installation
 - Delete the docker container
