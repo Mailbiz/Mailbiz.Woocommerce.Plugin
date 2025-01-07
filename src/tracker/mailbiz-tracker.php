@@ -8,7 +8,7 @@ class Mailbiz_Tracker
   public static function get_category($product_id)
   {
     $categories = get_the_terms($product_id, 'product_cat');
-    if (!is_wp_error($categories) && !isset($categories[0])) {
+    if (is_wp_error($categories) || !isset($categories[0])) {
       return null;
     }
     $category = $categories[0];
