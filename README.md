@@ -116,13 +116,25 @@ After setting up the environment, you can start developing. Any changes made to 
 
 ## Build / production (wip)
 
-Copy the code inside the `src/` directory to `mailbiz-woocommerce-tracker.zip` file and upload it to the WordPress admin dashboard.
+- `yarn install`
+- `yarn build`
+
+Or: copy the code inside the `src/*` directory to `mailbiz-woocommerce-tracker.zip` file and upload it to the WordPress admin dashboard.
+
+### Bumping the version
+
+- `package.json`
+- `/src/mailbiz-woocommerce-tracker.php`
 
 ## Compatibility
 
 - WordPress: 4.1.0 (`script_loader_tag` added)
 - PHP: 5.3.0 (use of `use` to make variable available inside closure added)
 - WooCommerce: 3.0 (`wc_get_products` added)
+
+### Updating minimum requirements
+
+- Update the `Requires at least` fields in the `/src/mailbiz-woocommerce-tracker.php` file.
 
 #### Versions used for development
 
