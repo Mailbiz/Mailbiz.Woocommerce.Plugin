@@ -65,8 +65,6 @@ class Mailbiz_Tracker
   #region [cart.sync]
   public static function get_cart_items($wc_items)
   {
-    $is_cart_page_and_url_might_be_incorrect = is_cart();
-
     $items = [];
     foreach ($wc_items as $item) {
       $data = $item['data'];
@@ -87,13 +85,9 @@ class Mailbiz_Tracker
         'properties' => $is_variation ? $data->get_attributes() : self::get_product_simple_attributes($data->get_attributes()),
         'recovery_properties' => [
           'variation_id' => $id,
-          'url' => wc_get_cart_url(),
+          'url' => wc_get_page_permalink('cart'),
         ]
       ]);
-
-      if ($is_cart_page_and_url_might_be_incorrect) {
-        unset($item_event['recovery_properties']['url']);
-      }
 
       $items[] = $item_event;
     }
@@ -191,7 +185,7 @@ class Mailbiz_Tracker
           'properties' => $v->get_attributes(),
           'recovery_properties' => [
             'variation_id' => $id,
-            'url' => wc_get_cart_url(),
+            'url' => wc_get_page_permalink('cart'),
           ],
         ];
       }, wc_get_products([
@@ -213,7 +207,7 @@ class Mailbiz_Tracker
           'properties' => self::get_product_simple_attributes($wc_product->get_attributes()),
           'recovery_properties' => [
             'variation_id' => $id,
-            'url' => wc_get_cart_url(),
+            'url' => wc_get_page_permalink('cart'),
           ],
         ]
       ];
