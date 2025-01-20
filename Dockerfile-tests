@@ -1,0 +1,30 @@
+# php
+FROM php:8.2.27-fpm-alpine
+# install composer
+COPY --from=composer/composer:2.8.4-bin /composer /usr/bin/composer
+
+# install xdebug
+RUN apk add autoconf
+RUN apk add build-base
+RUN apk add --update linux-headers
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+# install runkit7
+RUN pecl install channel://pecl.php.net/runkit7-4.0.0a6
+RUN echo "extension=runkit7.so" >> /usr/local/etc/php/conf.d/docker-php-ext-runkit7.ini
+
+
+# config xdebug
+RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+# RUN echo "xdebug.start_with_request=trigger" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+# RUN echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+# RUN echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+# install test dependencies
+WORKDIR /usr/app/tests
+COPY ./tests/composer.json ./tests/composer.lock ./tests/phpunit.xml ./
+RUN composer install
+
+# run tests
+CMD ["./vendor/bin/pest"]
+# run forever
+# CMD ["tail", "-f", "/dev/null"]

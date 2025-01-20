@@ -210,3 +210,6 @@ docker-volumes/*
 
 # Build
 build
+
+# Tests
+tests/vendor

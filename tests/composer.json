@@ -1,0 +1,18 @@
+{
+    "require-dev": {
+        "pestphp/pest": "^3.7",
+        "mockery/mockery": "^1.6",
+        "php-mock/php-mock-mockery": "^1.4"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "MailbizTest\\": "./cases/mocks/",
+            "Mailbiz\\": "../src/"
+        }
+    }
+}

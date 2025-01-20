@@ -1,6 +1,10 @@
 <?php
 
-class Mailbiz_Cart_Id
+namespace Mailbiz;
+
+use PasswordHash;
+
+class Cart_Id
 {
 
   private static $session_key = '_mbz_cart_id';
