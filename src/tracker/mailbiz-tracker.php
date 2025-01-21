@@ -60,6 +60,16 @@ class Mailbiz_Tracker
       return $item->get_code();
     }, $coupons));
   }
+
+  private static function get_properties($is_variation, $data)
+  {
+    if ($is_variation) {
+      $properties = $data->get_attributes();
+    } else {
+      $properties = self::get_product_simple_attributes($data->get_attributes());
+    }
+    return (object) $properties;
+  }
   #endregion
 
   #region [cart.sync]
@@ -82,7 +92,7 @@ class Mailbiz_Tracker
         'quantity' => $item['quantity'],
         'url' => $data->get_permalink(),
         'image_url' => self::get_image($data),
-        'properties' => $is_variation ? $data->get_attributes() : self::get_product_simple_attributes($data->get_attributes()),
+        'properties' => self::get_properties($is_variation, $data),
         'recovery_properties' => [
           'variation_id' => $id,
           'url' => wc_get_page_permalink('cart'),
@@ -182,7 +192,7 @@ class Mailbiz_Tracker
           'price_from' => floatval($v->get_regular_price()),
           'image_url' => self::get_image($v),
           'url' => $v->get_permalink(),
-          'properties' => $v->get_attributes(),
+          'properties' => self::get_properties(true, $v),
           'recovery_properties' => [
             'variation_id' => $id,
             'url' => wc_get_page_permalink('cart'),
@@ -204,7 +214,7 @@ class Mailbiz_Tracker
           'price_from' => floatval($wc_product->get_regular_price()),
           'image_url' => self::get_image($wc_product),
           'url' => $wc_product->get_permalink(),
-          'properties' => self::get_product_simple_attributes($wc_product->get_attributes()),
+          'properties' => self::get_properties(false, $wc_product),
           'recovery_properties' => [
             'variation_id' => $id,
             'url' => wc_get_page_permalink('cart'),
@@ -276,7 +286,7 @@ class Mailbiz_Tracker
         'price_from' => floatval($product->get_regular_price()),
         'url' => $product->get_permalink(),
         'image_url' => self::get_image($product),
-        'properties' => $is_variation ? $product->get_attributes() : self::get_product_simple_attributes($product->get_attributes()),
+        'properties' => self::get_properties($is_variation, $product),
       ]);
     }
     return $items;
