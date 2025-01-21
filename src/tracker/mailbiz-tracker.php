@@ -1,11 +1,15 @@
 <?php
 
-class Mailbiz_Tracker
+namespace Mailbiz;
+
+use Mailbiz\Cart_Id;
+
+class Tracker
 {
   private static $order_id = null;
 
   #region [generic]
-  public static function get_category($product_id)
+  private static function get_category($product_id)
   {
     $categories = get_the_terms($product_id, 'product_cat');
     if (is_wp_error($categories) || !isset($categories[0])) {
@@ -18,7 +22,7 @@ class Mailbiz_Tracker
     return $category->name;
   }
 
-  public static function get_brand($product_id)
+  private static function get_brand($product_id)
   {
     $possible_brand_taxonomies = ['product_brand', 'yith_product_brand', 'pa_brand'];
     foreach ($possible_brand_taxonomies as $taxonomy) {
@@ -30,7 +34,7 @@ class Mailbiz_Tracker
     return null;
   }
 
-  public static function get_image($object_with_get_image_id)
+  private static function get_image($object_with_get_image_id)
   {
     if (!method_exists($object_with_get_image_id, 'get_image_id')) {
       return null;
@@ -49,12 +53,12 @@ class Mailbiz_Tracker
     return $image[0];
   }
 
-  public static function compose_sku($product_id, $id)
+  private static function compose_sku($product_id, $id)
   {
     return $product_id . '_' . $id;
   }
 
-  public static function get_coupons_string($coupons)
+  private static function get_coupons_string($coupons)
   {
     return implode(', ', array_map(function ($item) {
       return $item->get_code();
@@ -73,7 +77,7 @@ class Mailbiz_Tracker
   #endregion
 
   #region [cart.sync]
-  public static function get_cart_items($wc_items)
+  private static function get_cart_items($wc_items)
   {
     $items = [];
     foreach ($wc_items as $item) {
@@ -104,7 +108,7 @@ class Mailbiz_Tracker
     return $items;
   }
 
-  public static function get_cart_delivery_address($shipping)
+  private static function get_cart_delivery_address($shipping)
   {
     $delivery_address = [
       'postal_code' => $shipping['postcode'] ?: null,
@@ -129,7 +133,7 @@ class Mailbiz_Tracker
 
     $cart = WC()->cart;
     $cart_sync = [
-      'cart_id' => Mailbiz_Cart_Id::get_cart_id(),
+      'cart_id' => Cart_Id::get_cart_id(),
       'items' => self::get_cart_items($cart->get_cart()),
       'subtotal' => floatval($cart->get_subtotal()),
       'freight' => floatval($cart->get_shipping_total()),
@@ -148,13 +152,14 @@ class Mailbiz_Tracker
   #endregion
 
   #region [account.sync]
-  public static function get_name($customer)
+  private static function get_name($customer)
   {
     $name = trim(implode(' ', [$customer->get_first_name(), $customer->get_last_name()]));
     $billing_name = trim(implode(' ', [$customer->get_billing_first_name(), $customer->get_billing_last_name()]));
     $shipping_name = trim(implode(' ', [$customer->get_shipping_first_name(), $customer->get_shipping_last_name()]));
     return $name ?: $billing_name ?: $shipping_name ?: null;
   }
+
   public static function get_account_sync_event()
   {
     $customer = WC()->customer;
@@ -174,12 +179,13 @@ class Mailbiz_Tracker
   #endregion
 
   #region [product.view]
-  public static function get_product_simple_attributes($attributes)
+  private static function get_product_simple_attributes($attributes)
   {
     return array_map(function ($a) {
       return $a->get_options()[$a->get_position()];
     }, $attributes);
   }
+
   private static function get_variants($product_type, $product_id, $wc_product)
   {
     if ($product_type === 'variable') {
@@ -263,7 +269,7 @@ class Mailbiz_Tracker
   #endregion
 
   #region [order.complete]
-  public static function get_order_items($wc_order_items)
+  private static function get_order_items($wc_order_items)
   {
     $items = [];
     foreach ($wc_order_items as $order_item) {
@@ -288,7 +294,7 @@ class Mailbiz_Tracker
     return $items;
   }
 
-  public static function get_order_delivery_address($order)
+  private static function get_order_delivery_address($order)
   {
     $delivery_address = [
       'postal_code' => $order->get_shipping_postcode() ?: null,
@@ -305,7 +311,7 @@ class Mailbiz_Tracker
     return $delivery_address;
   }
 
-  public static function get_payment_methods($order)
+  private static function get_payment_methods($order)
   {
     $payment_method = [
       'type' => $order->get_payment_method_title() ?: 'Unknown',
@@ -317,7 +323,7 @@ class Mailbiz_Tracker
     return [$payment_method];
   }
 
-  public static function get_delivery_methods($shipping_methods)
+  private static function get_delivery_methods($shipping_methods)
   {
     $delivery_methods = [];
     foreach ($shipping_methods as $shipping_method) {
@@ -338,7 +344,7 @@ class Mailbiz_Tracker
     $order = wc_get_order($order_id);
     $order_complete = [
       'order_id' => $order_id,
-      'cart_id' => Mailbiz_Cart_Id::get_cart_id(),
+      'cart_id' => Cart_Id::get_cart_id(),
       'subtotal' => floatval($order->get_subtotal()),
       'freight' => floatval($order->get_shipping_total()),
       'tax' => floatval($order->get_total_tax()),
@@ -352,7 +358,7 @@ class Mailbiz_Tracker
       'items' => self::get_order_items($order->get_items()),
     ];
 
-    Mailbiz_Cart_Id::generate_new_cart_id();
+    Cart_Id::generate_new_cart_id();
 
     $order_complete = self::unset_null_values($order_complete);
     $order_complete_event = ['order' => $order_complete];
@@ -371,7 +377,7 @@ class Mailbiz_Tracker
 
     $checkout_step = [
       'total_steps' => 3,
-      'cart_id' => Mailbiz_Cart_Id::get_cart_id()
+      'cart_id' => Cart_Id::get_cart_id()
     ];
 
     if ($is_cart) {
@@ -394,7 +400,7 @@ class Mailbiz_Tracker
   }
   #endregion
 
-  public static function unset_null_values($array)
+  private static function unset_null_values($array)
   {
     foreach ($array as $key => $value) {
       if (is_null($value)) {

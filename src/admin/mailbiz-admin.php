@@ -1,6 +1,8 @@
 <?php
 
-class Mailbiz_Admin
+namespace Mailbiz;
+
+class Admin
 {
 
 	const NONCE = 'mailbiz-update-integration-key';
@@ -21,13 +23,19 @@ class Mailbiz_Admin
 
 	public static function init_hooks()
 	{
-		add_action('admin_menu', ['Mailbiz_Admin', 'admin_menu']);
-		add_action('admin_enqueue_scripts', ['Mailbiz_Admin', 'load_resources']);
+		add_action('admin_menu', ['Mailbiz\\Admin', 'admin_menu']);
+		add_action('admin_enqueue_scripts', ['Mailbiz\\Admin', 'load_resources']);
 	}
 
 	public static function admin_menu()
 	{
-		add_options_page('Mailbiz WooCommerce Tracker', 'Mailbiz', 'manage_options', 'mailbiz-woocommerce-tracker', ['Mailbiz_Admin', 'load_options_page']);
+		add_options_page(
+			'Mailbiz WooCommerce Tracker',
+			'Mailbiz',
+			'manage_options',
+			'mailbiz-woocommerce-tracker',
+			['Mailbiz\\Admin', 'load_options_page']
+		);
 	}
 
 	public static function load_resources()
@@ -61,19 +69,19 @@ class Mailbiz_Admin
 		})($integration_key);
 
 		if (!$is_integration_key_valid) {
-			add_action('admin_notices', ['Mailbiz_Admin', 'load_error_integration_key']);
+			add_action('admin_notices', ['Mailbiz\\Admin', 'load_error_integration_key']);
 		}
 
 		$is_woocommerce_active = is_plugin_active('woocommerce/woocommerce.php');
 		if (!$is_woocommerce_active) {
-			add_action('admin_notices', ['Mailbiz_Admin', 'load_error_woocommerce']);
+			add_action('admin_notices', ['Mailbiz\\Admin', 'load_error_woocommerce']);
 		}
 
 		if (
 			$is_integration_key_valid &&
 			$is_woocommerce_active
 		) {
-			add_action('admin_notices', ['Mailbiz_Admin', 'load_success']);
+			add_action('admin_notices', ['Mailbiz\\Admin', 'load_success']);
 		} else {
 			$integration_enable = 'no';
 			$journey_enable = 'no';

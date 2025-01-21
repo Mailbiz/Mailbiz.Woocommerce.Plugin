@@ -1,7 +1,7 @@
 <div class="mbz-config">
   <form action="<?php echo esc_url(menu_page_url('mailbiz-woocommerce-tracker', false)) ?>" method="post">
     <input type="hidden" name="action" value="mailbiz-update-admin-config">
-    <?php wp_nonce_field(Mailbiz_Admin::NONCE); ?>
+    <?php wp_nonce_field(Mailbiz\Admin::NONCE); ?>
     <div class="mbz-logo">
       <img src="<?php echo MAILBIZ_PLUGIN_URL ?>/admin/images/brand-mailbiz.png">
     </div>

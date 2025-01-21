@@ -11,23 +11,21 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 
 - Docker
 - Docker Compose
+- Yarn
 
 ### Installation
 
-#### 1. Clone the repository:
-  ```sh
-  git clone https://github.com/Mailbiz/Mailbiz.Woocommerce.Plugin
-  cd Mailbiz.Woocommerce.Plugin
-  ```
+#### 1. Clone and install:
+  - `git clone https://github.com/Mailbiz/Mailbiz.Woocommerce.Plugin; cd Mailbiz.Woocommerce.Plugin;`
+  - `yarn install`
 
 #### 2. Set your .env file
   Copy the `.env.example` file to `.env` and set the desired variables.
   <small>(If you change the `PORT` after installing WP you might need to [reset the WordPress installation](#resetting-the-wordpress-installation)</small>
 
 #### 3. Start the Docker containers:
-  ```sh
-  docker compose up -d
-  ```
+
+  - `yarn dev`
 
 #### 4. Access your WordPress site:
   Open your browser and go to `http://localhost:60000`.
@@ -83,7 +81,7 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 
 #### 13. (optional) Configure xdebug (to debug PHP code):
   - Set the `XDEBUG_CLIENT_HOST` environment variable as your internal IP.
-  - Also Rebuild docker images as this variable is used in `docker-compose.yml`: `docker compose up --build -d`
+  - Also Rebuild docker images as this variable is used in `docker-compose.yml`: `yarn dev --build`
   - Install the [PHP Debug](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug) extension in VSCode (**don't forget to add breakpoints**).
   - Install the [Xdebug Helper](https://chromewebstore.google.com/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension in Chrome (**don't forget to enable debug**).
 
@@ -95,10 +93,11 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 ### Resetting the WordPress installation
 - Delete the docker container
 - Delete the `docker-volumes` directory
-- Run `docker compose up --build -d` again.
+- Run `yarn dev --build`.
 
-### Testing
-- Navigate to a product page and add it to the cart. Events should be tracked upon page reload.
+### Manual testing
+
+- Navigate to a product page and add it to the cart. Event calls should be printed upon page reload.
 
 ## Project Structure
 
@@ -129,7 +128,7 @@ Or: copy the code inside the `src/*` directory to `mailbiz-woocommerce-tracker.z
 ## Compatibility
 
 - WordPress: 4.1.0 (`script_loader_tag` added)
-- PHP: 5.3.0 (use of `use` to make variable available inside closure added)
+- PHP: 5.3.0 (use of `use` to make variable available inside closure added) (use of `namespace`)
 - WooCommerce: 3.0 (`wc_get_products` added)
 
 ### Updating minimum requirements

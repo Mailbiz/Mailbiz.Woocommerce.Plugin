@@ -1,12 +1,14 @@
 {
-  "name": "Mailbiz.Woocommerce.Plugin",
+  "name": "mailbiz-woocommerce-plugin",
   "version": "1.0.0",
   "repository": "git@github.com:Mailbiz/Mailbiz.Woocommerce.Plugin.git",
   "author": "Derik Gehring <derikgehring@gmail.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "zip-cli -i ./src -o ./build/mailbiz-woocommerce-tracker.zip"
+    "build": "zip-cli -i ./src -o ./build/mailbiz-woocommerce-tracker.zip",
+    "dev": "docker compose up db wordpress",
+    "dev:build": "docker compose build db wordpress --no-cache; yarn dev;"
   },
   "dependencies": {
     "zip-cli": "^0.0.0"

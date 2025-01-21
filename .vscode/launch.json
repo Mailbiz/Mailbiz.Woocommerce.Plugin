@@ -5,13 +5,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Listen for Xdebug",
+      "name": "Debug Wordpress request",
       "type": "php",
       "request": "launch",
       "port": 9003,
       "pathMappings": {
-        "/var/www/html/wp-content/plugins/mailbiz-woocommerce-tracker": "${workspaceFolder}/src"
-    }
+        "/var/www/html/wp-content/plugins/mailbiz-woocommerce-tracker": "${workspaceFolder}/src",
+        "/var/www/html": "${workspaceFolder}/docker-volumes/wordpress",
+      }
     }
   ]
 }

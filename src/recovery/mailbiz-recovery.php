@@ -1,6 +1,8 @@
 <?php
 
-class Mailbiz_Recovery
+namespace Mailbiz;
+
+class Recovery
 {
   private static $initialized = false;
   public static function init()
