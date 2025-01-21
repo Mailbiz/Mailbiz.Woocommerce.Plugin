@@ -186,9 +186,9 @@ class Tracker
     }, $attributes);
   }
 
-  private static function get_variants($product_id, $wc_product)
+  private static function get_variants($product_type, $product_id, $wc_product)
   {
-    if ($wc_product instanceof WC_Product_Variable) {
+    if ($product_type === 'variable') {
       return array_map(function ($v) use ($product_id) {
         $id = $v->get_id();
         return [
@@ -210,7 +210,7 @@ class Tracker
           'limit' => 100,
         ]));
     }
-    if ($wc_product instanceof WC_Product_Simple) {
+    if ($product_type === 'simple') {
       $id = $wc_product->get_id();
       return [
         [
@@ -239,22 +239,18 @@ class Tracker
       return null;
     }
 
-    $queried_object = get_queried_object();
     // This is to check if we are getting a single
     // product and not a list or search.
-    if (!$queried_object instanceof WP_Post) {
+    $queried_object = get_queried_object();
+    $is_wp_post = isset($queried_object->post_type) && $queried_object->post_type === 'product';
+    if (!$is_wp_post) {
       return null;
     }
 
-    // A group of products. Isn't a real product, can't
-    // ever be added to the cart. Doesn't have variants.
-    if ($wc_product instanceof WC_Product_Grouped) {
-      return null;
-    }
-
-    // External product that can't be sold, doesn't have
-    // a price and can't ever be added to the cart.
-    if ($wc_product instanceof WC_Product_External) {
+    // Not compatible with our model, no variations available
+    // and / or can't be added to cart, or is custom.
+    $product_type = $wc_product->get_type();
+    if ($product_type !== 'simple' && $product_type !== 'variable') {
       return null;
     }
 
@@ -264,7 +260,7 @@ class Tracker
       'url' => $wc_product->get_permalink(),
       'category' => self::get_category($product_id),
       'brand' => self::get_brand($product_id),
-      'variants' => self::get_variants($product_id, $wc_product),
+      'variants' => self::get_variants($product_type, $product_id, $wc_product),
     ];
     $product_view = self::unset_null_values($product_view);
     $product_view_event = ['product' => $product_view];
