@@ -32,13 +32,17 @@ class Mailbiz_Cart_Id
   // And use WordPress included class (since 2.5.0) the way that WC uses it.
   private static function generate_uuid_v4()
   {
-    require_once ABSPATH . 'wp-includes/class-phpass.php';
-    $hasher = new PasswordHash(8, false);
-    $data = $hasher->get_random_bytes(16);
+    try {
+      require_once ABSPATH . 'wp-includes/class-phpass.php';
+      $hasher = new PasswordHash(8, false);
+      $data = $hasher->get_random_bytes(16);
 
-    $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
-    $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+      $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+      $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
 
-    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+      return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    } catch (e) {
+      return 'ID-GENERATION-FAILED';
+    }
   }
 }
