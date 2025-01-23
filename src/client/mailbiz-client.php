@@ -3,6 +3,7 @@
 namespace Mailbiz;
 
 use Mailbiz\Tracker;
+use Mailbiz\Order_Id;
 
 class Client
 {
@@ -35,7 +36,7 @@ class Client
 			return;
 		}
 
-		add_filter('script_loader_tag', array('Mailbiz\\Client', 'filter_set_integration_hub_key'), 10, 3);
+		add_filter('script_loader_tag', ['Mailbiz\\Client', 'filter_set_integration_hub_key'], self::$priority['default'], 3);
 		add_action('wp_enqueue_scripts', ['Mailbiz\\Client', 'register_and_enqueue_integration_hub']);
 
 		if (get_option('mailbiz_journey_enable') !== 'yes') {
@@ -44,14 +45,17 @@ class Client
 
 		require_once MAILBIZ_PLUGIN_DIR . '/tracker/mailbiz-tracker.php';
 		require_once MAILBIZ_PLUGIN_DIR . '/tracker/mailbiz-cart-id.php';
+		require_once MAILBIZ_PLUGIN_DIR . '/tracker/mailbiz-order-id.php';
 
 		self::register_tracker();
 
-		add_action('woocommerce_thankyou', ['Mailbiz\\Client', 'order_complete_event']);
+		add_action('woocommerce_new_order', ['Mailbiz\\Client', 'queue_order_complete_event']);
+
 		add_action('wp_footer', ['Mailbiz\\Client', 'account_sync_event']);
 		add_action('wp_footer', ['Mailbiz\\Client', 'cart_sync_event']);
 		add_action('wp_footer', ['Mailbiz\\Client', 'product_view_event']);
 		add_action('wp_footer', ['Mailbiz\\Client', 'checkout_step_event']);
+		add_action('wp_footer', ['Mailbiz\\Client', 'order_complete_event']);
 
 		add_action('wp_footer', ['Mailbiz\\Client', 'enqueue_tracker'], self::$priority['low']);
 	}
@@ -86,6 +90,10 @@ class Client
 	#region [cart.sync]
 	public static function cart_sync_event()
 	{
+		if (Order_Id::get()) {
+			return;
+		}
+
 		$cart_sync = Tracker::get_cart_sync_event();
 		if (!$cart_sync) {
 			return;
@@ -129,14 +137,21 @@ class Client
 	#endregion
 
 	#region [order.complete]
-	public static function order_complete_event($order_id): void
+	public static function queue_order_complete_event($order_id): void
 	{
+		Order_Id::set($order_id);
+	}
+
+	public static function order_complete_event(): void
+	{
+		$order_id = Order_Id::get();
 		if (!$order_id) {
 			return;
 		}
 
-		Tracker::set_order_id($order_id);
 		$order_complete = Tracker::get_order_complete_event($order_id);
+		Order_Id::remove();
+
 		if (!$order_complete) {
 			return;
 		}

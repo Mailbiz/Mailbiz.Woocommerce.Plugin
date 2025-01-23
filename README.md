@@ -21,7 +21,7 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 
 #### 2. Set your .env file
   Copy the `.env.example` file to `.env` and set the desired variables.
-  <small>(If you change the `PORT` after installing WP you might need to [reset the WordPress installation](#resetting-the-wordpress-installation)</small>
+  <small>(If you change the `PORT` after installing WP you might need to [reset the WordPress installation](#resetting-the-wordpress-installation))</small>
 
 #### 3. Start the Docker containers:
 

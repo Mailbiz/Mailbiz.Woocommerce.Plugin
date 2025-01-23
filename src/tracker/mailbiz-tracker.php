@@ -3,11 +3,10 @@
 namespace Mailbiz;
 
 use Mailbiz\Cart_Id;
+use Mailbiz\Order_Id;
 
 class Tracker
 {
-  private static $order_id = null;
-
   #region [generic]
   private static function get_category($product_id)
   {
@@ -127,13 +126,9 @@ class Tracker
 
   public static function get_cart_sync_event()
   {
-    if (self::$order_id) {
-      return;
-    }
-
     $cart = WC()->cart;
     $cart_sync = [
-      'cart_id' => Cart_Id::get_cart_id(),
+      'cart_id' => Cart_Id::get(),
       'items' => self::get_cart_items($cart->get_cart()),
       'subtotal' => floatval($cart->get_subtotal()),
       'freight' => floatval($cart->get_shipping_total()),
@@ -335,16 +330,16 @@ class Tracker
     return $delivery_methods;
   }
 
-  public static function set_order_id($order_id)
-  {
-    self::$order_id = $order_id;
-  }
   public static function get_order_complete_event($order_id)
   {
+    if (!$order_id) {
+      return null;
+    }
+
     $order = wc_get_order($order_id);
     $order_complete = [
       'order_id' => $order_id,
-      'cart_id' => Cart_Id::get_cart_id(),
+      'cart_id' => Cart_Id::get(),
       'subtotal' => floatval($order->get_subtotal()),
       'freight' => floatval($order->get_shipping_total()),
       'tax' => floatval($order->get_total_tax()),
@@ -358,7 +353,7 @@ class Tracker
       'items' => self::get_order_items($order->get_items()),
     ];
 
-    Cart_Id::generate_new_cart_id();
+    Cart_Id::generate_new();
 
     $order_complete = self::unset_null_values($order_complete);
     $order_complete_event = ['order' => $order_complete];
@@ -371,13 +366,13 @@ class Tracker
   {
     $is_cart = is_cart();
     $is_checkout = is_checkout();
-    if (!$is_cart && !$is_checkout && !self::$order_id) {
+    if (!$is_cart && !$is_checkout && !Order_Id::get()) {
       return null;
     }
 
     $checkout_step = [
       'total_steps' => 3,
-      'cart_id' => Cart_Id::get_cart_id()
+      'cart_id' => Cart_Id::get()
     ];
 
     if ($is_cart) {
@@ -385,12 +380,12 @@ class Tracker
       $checkout_step['step_name'] = 'CART';
     }
 
-    if ($is_checkout && !self::$order_id) {
+    if ($is_checkout && !Order_Id::get()) {
       $checkout_step['step'] = 2;
       $checkout_step['step_name'] = 'CHECKOUT';
     }
 
-    if (self::$order_id) {
+    if (Order_Id::get()) {
       $checkout_step['step'] = 3;
       $checkout_step['step_name'] = 'COMPLETE';
     }
