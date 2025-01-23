@@ -9,10 +9,10 @@ class Cart_Id
 
   private static $session_key = '_mbz_cart_id';
   private static $cart_id = null;
-  public static function get_cart_id()
+  public static function get()
   {
     if (!self::_get()) {
-      self::generate_new_cart_id();
+      self::generate_new();
     }
 
     return self::_get();
@@ -26,7 +26,7 @@ class Cart_Id
     return self::$cart_id;
   }
 
-  public static function generate_new_cart_id()
+  public static function generate_new()
   {
     self::$cart_id = self::generate_uuid_v4();
     WC()->session->set(self::$session_key, self::$cart_id);
