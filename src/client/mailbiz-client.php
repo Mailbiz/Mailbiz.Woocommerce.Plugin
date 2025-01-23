@@ -35,7 +35,7 @@ class Client
 			return;
 		}
 
-		add_filter('script_loader_tag', array('Mailbiz\\Client', 'filter_set_integration_hub_key'), 10, 3);
+		add_filter('script_loader_tag', ['Mailbiz\\Client', 'filter_set_integration_hub_key'], 10, 3);
 		add_action('wp_enqueue_scripts', ['Mailbiz\\Client', 'register_and_enqueue_integration_hub']);
 
 		if (get_option('mailbiz_journey_enable') !== 'yes') {
