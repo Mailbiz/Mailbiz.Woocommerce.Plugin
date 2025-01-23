@@ -27,7 +27,7 @@ class Recovery
     self::maybe_recover_cart();
   }
 
-  public static function maybe_recover_cart(): void
+  private static function maybe_recover_cart(): void
   {
     if (!isset($_GET['_mb_cr_']) || !isset($_GET['utm_source'])) {
       return;

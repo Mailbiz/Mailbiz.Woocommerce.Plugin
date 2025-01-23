@@ -26,7 +26,7 @@ services:
     volumes:
       - ./docker-volumes/wordpress:/var/www/html
       - ./docker-volumes/plugins:/var/www/html/wp-content/plugins
-      # - ./src:/var/www/html/wp-content/plugins/mailbiz-woocommerce-tracker
+      - ./src:/var/www/html/wp-content/plugins/mailbiz-woocommerce-tracker
     ports:
       - "${PORT}:80"
     restart: no
