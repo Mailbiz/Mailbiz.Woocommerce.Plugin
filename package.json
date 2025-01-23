@@ -1,6 +1,6 @@
 {
   "name": "mailbiz-woocommerce-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": "git@github.com:Mailbiz/Mailbiz.Woocommerce.Plugin.git",
   "author": "Derik Gehring <derikgehring@gmail.com>",
   "license": "MIT",
