@@ -22,7 +22,7 @@ function beforeEach()
 {
     // Mock Cart_Id class
     $cartIdMock = Mockery::mock('alias:Mailbiz\\Cart_Id');
-    $cartIdMock->shouldReceive('get_cart_id')->andReturn('TEST_CART_ID');
+    $cartIdMock->shouldReceive('get')->andReturn('TEST_CART_ID');
 
     // Mock get_woocommerce_currency method
     PHPMockery::mock('Mailbiz', 'get_woocommerce_currency')->andReturn('BRL');
