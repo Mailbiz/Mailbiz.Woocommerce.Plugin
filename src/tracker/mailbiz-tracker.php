@@ -185,7 +185,7 @@ class Tracker
   {
     if ($product_type === 'variable') {
       return array_map(function ($v) use ($product_id) {
-        $id = $v->get_id();
+        $id = strval($v->get_id());
         return [
           'sku' => self::compose_sku($product_id, $id),
           'name' => $v->get_name(),
@@ -206,7 +206,7 @@ class Tracker
         ]));
     }
     if ($product_type === 'simple') {
-      $id = $wc_product->get_id();
+      $id = strval($wc_product->get_id());
       return [
         [
           'sku' => self::compose_sku($product_id, $id),
