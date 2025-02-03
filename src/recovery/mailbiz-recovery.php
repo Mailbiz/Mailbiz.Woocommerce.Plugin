@@ -24,7 +24,10 @@ class Recovery
       return;
     }
 
-    self::maybe_recover_cart();
+    try {
+      self::maybe_recover_cart();
+    } catch (\Exception $e) {
+    }
   }
 
   public static function maybe_recover_cart(): void
