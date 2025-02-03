@@ -33,7 +33,8 @@ if (!defined('MAILBIZ_PLUGIN_DIR')) {
 }
 
 if (!defined('MAILBIZ_PLUGIN_SLUG')) {
-	define('MAILBIZ_PLUGIN_SLUG', end(explode('/', MAILBIZ_PLUGIN_DIR)));
+	$dir_exploded = explode('/', MAILBIZ_PLUGIN_DIR) ;
+	define('MAILBIZ_PLUGIN_SLUG', end($dir_exploded) ?: 'mailbiz-woocommerce-tracker');
 }
 
 if (!defined('MAILBIZ_PLUGIN_URL')) {
