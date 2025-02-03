@@ -33,7 +33,7 @@ class Admin
 			'Mailbiz WooCommerce Tracker',
 			'Mailbiz',
 			'manage_options',
-			'mailbiz-woocommerce-tracker',
+			MAILBIZ_PLUGIN_SLUG,
 			['Mailbiz\\Admin', 'load_options_page']
 		);
 	}

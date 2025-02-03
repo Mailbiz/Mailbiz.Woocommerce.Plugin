@@ -23,11 +23,21 @@ if (defined('WP_CLI') && WP_CLI) {
 	return;
 }
 
+if (defined('MAILBIZ_PLUGIN_LOADED')) {
+	return;
+}
+define('MAILBIZ_PLUGIN_LOADED', true);
+
 if (!defined('MAILBIZ_PLUGIN_DIR')) {
 	define('MAILBIZ_PLUGIN_DIR', __DIR__);
 }
+
+if (!defined('MAILBIZ_PLUGIN_SLUG')) {
+	define('MAILBIZ_PLUGIN_SLUG', end(explode('/', MAILBIZ_PLUGIN_DIR)));
+}
+
 if (!defined('MAILBIZ_PLUGIN_URL')) {
-	define('MAILBIZ_PLUGIN_URL', plugins_url('/mailbiz-woocommerce-tracker'));
+	define('MAILBIZ_PLUGIN_URL', plugins_url('/' . MAILBIZ_PLUGIN_SLUG));
 }
 
 if (is_admin()) {
