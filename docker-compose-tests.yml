@@ -1,0 +1,17 @@
+name: mailbiz-woocommerce-tracker-tests
+
+services:
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile-tests
+    env_file: .env
+    volumes:
+      - ./tests/cases:/usr/app/tests/cases
+      - ./src:/usr/app/src 
+    restart: no
+    tty: true
+    environment:
+      clear_env: no
+      XDEBUG_TRIGGER: trigger
+      XDEBUG_CONFIG: client_host=${XDEBUG_CLIENT_HOST} mode=debug start_with_request=trigger client_port=9003 log_level=${XDEBUG_LOG_LEVEL} log=/tmp/xdebug.log

@@ -117,10 +117,19 @@ After setting up the environment, you can start developing. Any changes made to 
 
 ## Unit tests
 
+### Run tests
+
 - `yarn test`
+
+### Develop tests
+
+This command copies the test dependencies from the tests container to your machine, so that intellisense can help in development.
+
+- `yarn test:setupDev`
 
 ### Docs
 
+https://pestphp.com/
 https://github.com/mockery/mockery
 https://github.com/php-mock/php-mock-mockery
 

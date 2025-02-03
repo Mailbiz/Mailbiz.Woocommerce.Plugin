@@ -7,11 +7,11 @@
   "private": true,
   "scripts": {
     "build": "zip-cli -i ./src -o ./build/mailbiz-woocommerce-tracker.zip",
-    "dev": "docker compose up db wordpress",
-    "dev:build": "docker compose build db wordpress --no-cache; yarn dev;",
-    "test": "docker compose up tests",
-    "test:build": "docker compose build tests --no-cache; yarn test;",
-    "test:setupDev": "docker compose cp tests:/usr/app/tests/vendor ./tests/vendor"
+    "dev": "docker compose up",
+    "dev:build": "docker compose build --no-cache; yarn dev;",
+    "test": "docker compose -f ./docker-compose-tests.yml up",
+    "test:build": "docker compose -f ./docker-compose-tests.yml build --no-cache; yarn test;",
+    "test:setupDev": "docker compose -f ./docker-compose-tests.yml cp tests:/usr/app/tests/vendor ./tests/vendor"
   },
   "dependencies": {
     "zip-cli": "^0.0.0"
