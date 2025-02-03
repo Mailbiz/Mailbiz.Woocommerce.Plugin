@@ -5,7 +5,7 @@ namespace Mailbiz;
 /**
  * Plugin Name: Mailbiz WooCommerce Tracker
  * Description: Handles configuration and insertion of the Mailbiz Tracker in WooCommerce applications.
- * Version: 1.0.0
+ * Version: 1.0.2
  * Author: Mailbiz
  * Author URI: https://mailbiz.com.br
  * Text Domain: mailbiz-woocommerce-tracker

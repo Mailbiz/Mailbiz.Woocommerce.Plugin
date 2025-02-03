@@ -54,14 +54,16 @@ class Recovery
     }
 
     foreach ($recovery['its'] as $item) {
-      list($quantity, $product_id, $sku, $properties_json) = $item;
+      $quantity = (int) $item[0];
+      $product_id = (int) $item[1];
+      // $sku = $item[2];
+      $properties_json = $item[3];
+
       $properties = json_decode($properties_json, true);
 
       $valid_variation_id = isset($properties['variation_id']) && $properties['variation_id'] !== $product_id;
       $variation_id = $valid_variation_id ? $properties['variation_id'] : 0;
 
-      $quantity = (int) $quantity;
-      $product_id = (int) $product_id;
       $variation_id = (int) $variation_id;
 
       WC()->cart->add_to_cart($product_id, $quantity, $variation_id);

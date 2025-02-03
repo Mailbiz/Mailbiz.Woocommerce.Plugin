@@ -21,7 +21,8 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 
 #### 2. Set your .env file
   Copy the `.env.example` file to `.env` and set the desired variables.
-  <small>(If you change the `PORT` after installing WP you might need to [reset the WordPress installation](#resetting-the-wordpress-installation))</small>
+  
+  <sub>(If you change the `PORT` after installing WP you might need to [reset the WordPress installation](#resetting-the-wordpress-installation))</sub>
 
 #### 3. Start the Docker containers:
 
@@ -62,7 +63,7 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
   - Fill in product details
   - Publish the product
 
-<small>It is a good idea to add the maximum amount of data to the product to test every possibility. This includes adding products with and without variations.</small>
+<sub>It is a good idea to add the maximum amount of data to the product to test every possibility. This includes adding products with and without variations.</sub>
 
 #### 9. (optional) Add a payment method:
   - Access `http://localhost:60000/wp-admin/admin.php?page=wc-admin&task=payments`
@@ -133,6 +134,15 @@ Or: copy the code inside the `src/*` directory to `mailbiz-woocommerce-tracker.z
 
 - `package.json`
 - `/src/mailbiz-woocommerce-tracker.php`
+
+### Build
+
+- `yarn build`
+
+<sub>Or: copy the code inside the `src/*` directory to `mailbiz-woocommerce-tracker.zip` file.</sub>
+- Create a tag `git tag -a v1.0.0 -m "Version 1.0.0"`
+- Push the tag `git push origin v1.0.0`
+- Create a release on GitHub and upload the built .zip file
 
 ## Compatibility
 
