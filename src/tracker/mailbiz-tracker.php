@@ -124,6 +124,11 @@ class Tracker
     return $delivery_address;
   }
 
+  public static function cart_should_have_items(): bool
+  {
+    return isset($_COOKIE['woocommerce_items_in_cart']) && isset($_COOKIE['woocommerce_cart_hash']) && $_COOKIE['woocommerce_items_in_cart'] === '1';
+  }
+
   public static function get_cart_sync_event()
   {
     $cart = WC()->cart;
@@ -139,6 +144,11 @@ class Tracker
       'currency' => get_woocommerce_currency(),
       'delivery_address' => self::get_cart_delivery_address(WC()->customer->get_shipping()),
     ];
+
+    $incorrect_empty_cart = empty($cart_sync['items']) && self::cart_should_have_items();
+    if ($incorrect_empty_cart) {
+      return null;
+    }
 
     $cart_sync = self::unset_null_values($cart_sync);
     $cart_sync_event = ['cart' => $cart_sync];
