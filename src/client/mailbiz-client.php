@@ -74,12 +74,12 @@ class Client
 	}
 	public static function register_and_enqueue_integration_hub()
 	{
-		wp_register_script('mailbiz-integration-hub', plugin_dir_url(__FILE__) . 'scripts/integration-hub.js', [], false, false);
+		wp_register_script('mailbiz-integration-hub', MAILBIZ_PLUGIN_URL . '/client/scripts/integration-hub.js', [], false, false);
 		wp_enqueue_script('mailbiz-integration-hub');
 	}
 	public static function register_tracker()
 	{
-		wp_register_script('mailbiz-tracker', plugin_dir_url(__FILE__) . 'scripts/mb_track.js', [], false, false);
+		wp_register_script('mailbiz-tracker', MAILBIZ_PLUGIN_URL . '/client/scripts/mb_track.js', [], false, false);
 	}
 	public static function enqueue_tracker()
 	{
