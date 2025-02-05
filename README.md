@@ -55,7 +55,7 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 #### 7. Configure the Mailbiz WooCommerce Plugin:
   - Access `http://localhost:60000/wp-admin/options-general.php?page=mailbiz-woocommerce-tracker`
   - Enable integrations
-  - Fill in the `Chave de integração` (eg: `111111111111111111111111` or `653a628a7058d778ef8ebe06`)
+  - Fill in the `Chave de integração` (eg: `111111111111111111111111`)
   - Save changes
 
 #### 8. (optional) Add a product to the store:
