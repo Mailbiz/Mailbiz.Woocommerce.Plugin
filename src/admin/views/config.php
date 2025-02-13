@@ -3,7 +3,7 @@
     <input type="hidden" name="action" value="mailbiz-update-admin-config">
     <?php wp_nonce_field(Mailbiz\Admin::NONCE); ?>
     <div class="mbz-logo">
-      <img src="<?php echo MAILBIZ_PLUGIN_URL ?>/admin/images/brand-mailbiz.png">
+      <img src="<?php echo esc_url(MAILBIZ_PLUGIN_URL) ?>/admin/images/brand-mailbiz.png">
     </div>
     <div class="mbz-form">
       <div class="mbz-form-line-switch">
