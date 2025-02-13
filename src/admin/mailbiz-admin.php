@@ -11,9 +11,7 @@ class Admin
 
 	public static function init()
 	{
-		if (isset($_POST['action']) && $_POST['action'] == 'mailbiz-update-admin-config') {
-			self::update_admin_config();
-		}
+		self::maybe_update_admin_config();
 
 		if (!self::$hooks_initialized) {
 			self::$hooks_initialized = true;
@@ -44,18 +42,21 @@ class Admin
 		wp_enqueue_style('mailbiz-config-css');
 	}
 
-	public static function update_admin_config()
+	public static function maybe_update_admin_config()
 	{
-		if (!wp_verify_nonce($_POST['_wpnonce'], self::NONCE)) {
+		$wp_nonce = isset($_POST['_wpnonce']) ? sanitize_text_field(wp_unslash($_POST['_wpnonce'])) : null;
+		$action = isset($_POST['action']) ? sanitize_text_field(wp_unslash($_POST['action'])) : null;
+		if ($action !== 'mailbiz-update-admin-config' || !wp_verify_nonce($wp_nonce, self::NONCE)) {
 			return;
 		}
 
-		$get_boolean_arg = function ($option) {
-			return isset($_POST[$option]) && $_POST[$option] == 'on' ? 'yes' : 'no';
+		$get_boolean_arg = function ($key) {
+			$value = isset($_POST[$key]) ? sanitize_text_field(wp_unslash($_POST[$key])) : null;
+			return $value == 'on' ? 'yes' : 'no';
 		};
 
 		$integration_enable = $get_boolean_arg('integration-enable');
-		$integration_key = $_POST['integration-key'];
+		$integration_key = isset($_POST['integration-key']) ? sanitize_text_field(wp_unslash($_POST['integration-key'])) : '';
 		$journey_enable = $get_boolean_arg('journey-enable');
 
 		$is_integration_key_valid = (function ($integration_key) {
