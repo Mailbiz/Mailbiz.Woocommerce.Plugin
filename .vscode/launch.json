@@ -10,7 +10,7 @@
       "request": "launch",
       "port": 9003,
       "pathMappings": {
-        "/var/www/html/wp-content/plugins/mailbiz-woocommerce-tracker": "${workspaceFolder}/src",
+        "/var/www/html/wp-content/plugins/mailbiz-tracker-for-woocommerce": "${workspaceFolder}/src",
         "/var/www/html/wp-content/plugins": "${workspaceFolder}/docker-volumes/plugins",
         "/var/www/html": "${workspaceFolder}/docker-volumes/wordpress",
       }

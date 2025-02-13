@@ -28,7 +28,7 @@ class Admin
 	public static function admin_menu()
 	{
 		add_options_page(
-			'Mailbiz WooCommerce Tracker',
+			'Mailbiz Tracker for WooCommerce',
 			'Mailbiz',
 			'manage_options',
 			MAILBIZ_PLUGIN_SLUG,

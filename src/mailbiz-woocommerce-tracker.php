@@ -3,17 +3,17 @@
 namespace Mailbiz;
 
 /**
- * Plugin Name: Mailbiz WooCommerce Tracker
+ * Plugin Name: Mailbiz Tracker for WooCommerce
  * Description: Handles configuration and insertion of the Mailbiz Tracker in WooCommerce applications.
  * Version: 1.0.2
  * Author: Mailbiz
  * Author URI: https://mailbiz.com.br
- * Text Domain: mailbiz-woocommerce-tracker
+ * Text Domain: mailbiz-tracker-for-woocommerce
  * Requires Plugins: woocommerce
  * Requires at least: 4.1
  * Requires PHP: 5.3
  * 
- * @package Mailbiz WooCommerce Tracker
+ * @package Mailbiz Tracker for WooCommerce
  */
 
 // Exit if accessed directly.
@@ -34,7 +34,7 @@ if (!defined('MAILBIZ_PLUGIN_DIR')) {
 
 if (!defined('MAILBIZ_PLUGIN_SLUG')) {
 	$dir_exploded = explode('/', MAILBIZ_PLUGIN_DIR) ;
-	define('MAILBIZ_PLUGIN_SLUG', end($dir_exploded) ?: 'mailbiz-woocommerce-tracker');
+	define('MAILBIZ_PLUGIN_SLUG', end($dir_exploded) ?: 'mailbiz-tracker-for-woocommerce');
 }
 
 if (!defined('MAILBIZ_PLUGIN_URL')) {

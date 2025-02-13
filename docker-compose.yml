@@ -1,7 +1,7 @@
-name: mailbiz-woocommerce-tracker
+name: mailbiz-woocommerce-plugin
 
 networks:
-  mailbiz-woocommerce-tracker:
+  mailbiz-woocommerce-plugin:
     driver: bridge
 
 services:
@@ -16,7 +16,7 @@ services:
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
     networks:
-      - mailbiz-woocommerce-tracker
+      - mailbiz-woocommerce-plugin
 
   wordpress:
     env_file: .env
@@ -26,7 +26,7 @@ services:
     volumes:
       - ./docker-volumes/wordpress:/var/www/html
       - ./docker-volumes/plugins:/var/www/html/wp-content/plugins
-      - ./src:/var/www/html/wp-content/plugins/mailbiz-woocommerce-tracker
+      - ./src:/var/www/html/wp-content/plugins/mailbiz-tracker-for-woocommerce
     ports:
       - "${PORT}:80"
     restart: no
@@ -37,4 +37,4 @@ services:
       WORDPRESS_DB_NAME: wordpress
       XDEBUG_CONFIG: client_host=${XDEBUG_CLIENT_HOST} mode=debug start_with_request=yes client_port=9003 log_level=${XDEBUG_LOG_LEVEL} log=/tmp/xdebug.log
     networks:
-      - mailbiz-woocommerce-tracker
+      - mailbiz-woocommerce-plugin

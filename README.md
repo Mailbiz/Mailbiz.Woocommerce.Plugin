@@ -1,6 +1,9 @@
 # Mailbiz WooCommerce Plugin
 
-This plugin adds support to WooCommerce stores for integrating with Mailbiz's Open Tracker.
+In the Mailbiz context the name of this software is `Mailbiz WooCommerce Plugin`.
+In the WordPress context the name of this software is `Mailbiz Tracker for WooCommerce`.
+
+This plugin adds support for WooCommerce stores to integrate with Mailbiz's Open Tracker.
 
 The plugin adds a configuration panel to the WooCommerce settings page to allow the Mailbiz's support team to add the user credentials.
 Once this is set up, the plugin will automatically add the tracking scripts to the WooCommerce store.
@@ -33,7 +36,7 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
   Follow the WordPress installation steps.
 
   Suggested settings:
-  - Site Title: `Mailbiz WooCommerce Tracker`
+  - Site Title: `Mailbiz Tracker for WooCommerce`
   - Username: `username`
   - Password: `password`
   - Email: `email@email.com`
@@ -49,11 +52,11 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 
 #### 6. Activate Mailbiz WooCommerce Plugin:
   - Access `http://localhost:60000/wp-admin/plugins.php`
-  - Find `Mailbiz WooCommerce Tracker` in the installed plugins list
+  - Find `Mailbiz Tracker for WooCommerce` in the installed plugins list
   - Click on `Activate`
 
 #### 7. Configure the Mailbiz WooCommerce Plugin:
-  - Access `http://localhost:60000/wp-admin/options-general.php?page=mailbiz-woocommerce-tracker`
+  - Access `http://localhost:60000/wp-admin/options-general.php?page=mailbiz-tracker-for-woocommerce`
   - Enable integrations
   - Fill in the `Chave de integração` (eg: `111111111111111111111111`)
   - Save changes
@@ -108,7 +111,7 @@ Once this is set up, the plugin will automatically add the tracking scripts to t
 - `docker-volumes/db_data`: Directory for the MySQL database.
 - `docker-volumes/wordpress`: Directory for the WordPress installation.
 - `docker-volumes/plugins`: WordPress plugins folder.
-- `src/`: Directory containing the source code for the Mailbiz WooCommerce Tracker. Already mapped to the WordPress plugins folder as `mailbiz-woocommerce-tracker`.
+- `src/`: Directory containing the source code for the Mailbiz Tracker for WooCommerce. Already mapped to the WordPress plugins folder as `mailbiz-tracker-for-woocommerce`.
 
 ## Usage
 
@@ -119,13 +122,13 @@ After setting up the environment, you can start developing. Any changes made to 
 ### Bumping the version
 
 - `package.json`
-- `/src/mailbiz-woocommerce-tracker.php`
+- `/src/mailbiz-tracker-for-woocommerce.php`
 
 ### Build
 
 - `yarn build`
 
-<sub>Or: copy the code inside the `src/*` directory to `mailbiz-woocommerce-tracker.zip` file.</sub>
+<sub>Or: copy the code inside the `src/*` directory to `mailbiz-tracker-for-woocommerce.zip` file.</sub>
 - Create a tag `git tag -a v1.0.0 -m "Version 1.0.0"`
 - Push the tag `git push origin v1.0.0`
 - Create a release on GitHub and upload the built .zip file
@@ -138,7 +141,7 @@ After setting up the environment, you can start developing. Any changes made to 
 
 ### Updating minimum requirements
 
-- Update the `Requires at least` fields in the `/src/mailbiz-woocommerce-tracker.php` file.
+- Update the `Requires at least` fields in the `/src/mailbiz-tracker-for-woocommerce.php` file.
 
 #### Versions used for development
 
