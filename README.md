@@ -158,3 +158,7 @@ Hooks
 - https://woocommerce.github.io/code-reference/hooks/hooks.html
 - https://wp-kama.com/plugin/woocommerce/hook
 - https://developer.wordpress.org/apis/hooks/action-reference/
+
+## License
+
+This software is licensed under the GNU General Public License version 2 (GPLv2). See the [LICENSE](LICENSE) file for details.
