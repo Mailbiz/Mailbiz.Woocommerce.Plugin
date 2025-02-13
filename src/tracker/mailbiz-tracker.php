@@ -337,6 +337,10 @@ class Tracker
     }
 
     $order = wc_get_order($order_id);
+    if (!$order) {
+      return null;
+    }
+    
     $order_complete = [
       'order_id' => $order_id,
       'cart_id' => Cart_Id::get(),
