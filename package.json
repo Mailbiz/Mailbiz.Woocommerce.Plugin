@@ -3,7 +3,6 @@
   "version": "1.0.2",
   "repository": "git@github.com:Mailbiz/Mailbiz.Woocommerce.Plugin.git",
   "author": "Mailbiz <mailbiz.com.br>",
-  "private": true,
   "scripts": {
     "build": "zip-cli -i ./src -o ./build/mailbiz-woocommerce-tracker.zip",
     "dev": "docker compose up db wordpress",
