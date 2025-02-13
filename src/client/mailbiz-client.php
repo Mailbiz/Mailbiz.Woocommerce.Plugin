@@ -79,7 +79,7 @@ class Client
 	}
 	public static function register_tracker()
 	{
-		wp_register_script('mailbiz-tracker', MAILBIZ_PLUGIN_URL . '/client/scripts/mb_track.js', [], false, false);
+		wp_register_script('mailbiz-tracker', MAILBIZ_PLUGIN_URL . '/client/scripts/mb-track.js', [], false, false);
 	}
 	public static function enqueue_tracker()
 	{
