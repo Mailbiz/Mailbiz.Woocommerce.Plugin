@@ -186,7 +186,7 @@ class Tracker
     if ($product_type === 'variable') {
       return array_map(function ($v) use ($product_id) {
         $id = strval($v->get_id());
-        return [
+        return self::unset_null_values([
           'sku' => self::compose_sku($product_id, $id),
           'name' => $v->get_name(),
           'price' => floatval($v->get_price()),
@@ -198,7 +198,7 @@ class Tracker
             'variation_id' => $id,
             'url' => wc_get_page_permalink('cart'),
           ],
-        ];
+        ]);
       }, wc_get_products([
           'parent' => $product_id,
           'type' => 'variation',
@@ -208,7 +208,7 @@ class Tracker
     if ($product_type === 'simple') {
       $id = strval($wc_product->get_id());
       return [
-        [
+        self::unset_null_values([
           'sku' => self::compose_sku($product_id, $id),
           'name' => $wc_product->get_name(),
           'price' => floatval($wc_product->get_price()),
@@ -220,7 +220,7 @@ class Tracker
             'variation_id' => $id,
             'url' => wc_get_page_permalink('cart'),
           ],
-        ]
+        ])
       ];
     }
     return null;
