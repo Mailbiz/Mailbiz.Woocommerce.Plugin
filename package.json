@@ -2,8 +2,7 @@
   "name": "mailbiz-woocommerce-plugin",
   "version": "1.0.2",
   "repository": "git@github.com:Mailbiz/Mailbiz.Woocommerce.Plugin.git",
-  "author": "Derik Gehring <derikgehring@gmail.com>",
-  "license": "MIT",
+  "author": "Mailbiz <mailbiz.com.br>",
   "private": true,
   "scripts": {
     "build": "zip-cli -i ./src -o ./build/mailbiz-woocommerce-tracker.zip",
