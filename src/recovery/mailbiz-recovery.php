@@ -29,11 +29,14 @@ class Recovery
 
   public static function maybe_recover_cart(): void
   {
-    if (!isset($_GET['_mb_cr_']) || !isset($_GET['utm_source'])) {
+    $_mb_cr_ = isset($_GET['_mb_cr_']) ? sanitize_text_field(wp_unslash($_GET['_mb_cr_'])) : null;
+    $utm_source = isset($_GET['utm_source']) ? sanitize_text_field(wp_unslash($_GET['utm_source'])) : null;
+
+    if (!$_mb_cr_ || !$utm_source) {
       return;
     }
 
-    if ($_GET['utm_source'] !== 'mailbiz') {
+    if ($utm_source !== 'mailbiz') {
       return;
     }
 
@@ -41,7 +44,7 @@ class Recovery
       return;
     }
 
-    $recovery = json_decode(base64_decode(sanitize_text_field(wp_unslash($_GET['_mb_cr_']))), true);
+    $recovery = json_decode(base64_decode($_mb_cr_), true);
     if (
       !$recovery ||
       !isset($recovery['c']) ||
@@ -54,18 +57,18 @@ class Recovery
     }
 
     foreach ($recovery['its'] as $item) {
-      $quantity_str = trim(sanitize_text_field($item[0]));
+      $quantity_str = trim(sanitize_text_field(wp_unslash($item[0])));
       $quantity = is_numeric($quantity_str) ? (int) $quantity_str : null;
 
-      $product_id_str = trim(sanitize_text_field($item[1]));
+      $product_id_str = trim(sanitize_text_field(wp_unslash($item[1])));
       $product_id = is_numeric($product_id_str) ? (int) $product_id_str : null;
 
       // $sku = $item[2];
 
-      $properties_json = trim(sanitize_text_field($item[3]));
+      $properties_json = trim(sanitize_text_field(wp_unslash($item[3])));
 
       $properties = json_decode($properties_json, true);
-      $properties_variation_id_str = isset($properties['variation_id']) ? sanitize_text_field($properties['variation_id']) : null;
+      $properties_variation_id_str = isset($properties['variation_id']) ? sanitize_text_field(wp_unslash($properties['variation_id'])) : null;
 
       $valid_variation_id = isset($properties_variation_id_str) && $properties_variation_id_str !== $product_id_str;
       $variation_id_str = $valid_variation_id ? $properties_variation_id_str : 0;
