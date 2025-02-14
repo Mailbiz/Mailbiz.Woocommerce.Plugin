@@ -4,11 +4,13 @@
   "repository": "git@github.com:Mailbiz/Mailbiz.Woocommerce.Plugin.git",
   "author": "Mailbiz <mailbiz.com.br>",
   "scripts": {
-    "build": "zip-cli -i ./src -o ./build/mailbiz-tracker-for-woocommerce.zip",
+    "build": "node scripts/build.js",
     "dev": "docker compose up db wordpress",
     "dev:build": "docker compose build db wordpress --no-cache; yarn dev;"
   },
-  "dependencies": {
-    "zip-cli": "^0.0.0"
+  "dependencies": {},
+  "devDependencies": {
+    "archiver": "^7.0.1",
+    "fs-extra": "^11.3.0"
   }
 }

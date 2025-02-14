@@ -125,14 +125,15 @@ After setting up the environment, you can start developing. Any changes made to 
 - `/src/mailbiz-tracker-for-woocommerce.php`
 - `/readme.txt`
 
-### Build
+### Publishing the version
 
-- `yarn build`
-
-<sub>Or: copy the code inside the `src/*` directory to `mailbiz-tracker-for-woocommerce.zip` file.</sub>
 - Create a tag `git tag -a v1.0.0 -m "Version 1.0.0"`
 - Push the tag `git push origin v1.0.0`
 - Create a release on GitHub and upload the built .zip file
+
+### Build
+
+- `yarn build`
 
 ## Compatibility
 
