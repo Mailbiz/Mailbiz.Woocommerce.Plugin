@@ -3,10 +3,10 @@
 In the Mailbiz context the name of this software is `Mailbiz WooCommerce Plugin`.
 In the WordPress context the name of this software is `Mailbiz Tracker for WooCommerce`.
 
-This plugin adds support for WooCommerce stores to integrate with Mailbiz's Open Tracker.
+This plugin adds support for WooCommerce stores to integrate with Mailbiz.
 
 The plugin adds a configuration panel to the WooCommerce settings page to allow the Mailbiz's support team to add the user credentials.
-Once this is set up, the plugin will automatically add the tracking scripts to the WooCommerce store.
+Once this is set up, the plugin will automatically add the integration and tracking scripts to the WooCommerce store.
 
 ## Getting Started
 
