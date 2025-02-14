@@ -123,6 +123,7 @@ After setting up the environment, you can start developing. Any changes made to 
 
 - `package.json`
 - `/src/mailbiz-tracker-for-woocommerce.php`
+- `/readme.txt`
 
 ### Build
 
@@ -141,7 +142,10 @@ After setting up the environment, you can start developing. Any changes made to 
 
 ### Updating minimum requirements
 
-- Update the `Requires at least` fields in the `/src/mailbiz-tracker-for-woocommerce.php` file.
+Update the "Requires" fields in:
+
+- `/src/mailbiz-tracker-for-woocommerce.php`
+- `/readme.txt`
 
 #### Versions used for development
 
@@ -149,7 +153,6 @@ After setting up the environment, you can start developing. Any changes made to 
 - WooCommerce: 9.3.3
 - MySQL: 8.0
 - PHP: 8.2.24
-
 
 ## Docs
 
