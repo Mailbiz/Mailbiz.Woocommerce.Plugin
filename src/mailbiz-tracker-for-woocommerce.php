@@ -12,6 +12,7 @@ namespace Mailbiz;
  * Requires Plugins: woocommerce
  * Requires at least: 4.1
  * Requires PHP: 5.3
+ * License: GPLv2 or later
  * 
  * @package Mailbiz Tracker for WooCommerce
  */

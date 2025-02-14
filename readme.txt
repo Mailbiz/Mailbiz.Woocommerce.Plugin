@@ -2,7 +2,7 @@
 Contributors: mailbiz0derik
 Tags: mailbiz, ecommerce, pixel, tracker, woocommerce
 Requires at least: 4.1
-Tested up to: 6.6
+Tested up to: 6.7
 Stable tag: 1.0.3
 Requires PHP: 5.3
 License: GPLv2 or later
