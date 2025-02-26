@@ -138,7 +138,7 @@ After setting up the environment, you can start developing. Any changes made to 
 ## Compatibility
 
 - WordPress: 4.1.0 (`script_loader_tag` added)
-- PHP: 5.3.0 (use of `use` to make variable available inside closure added) (use of `namespace`)
+- PHP: 7.0 (required by Wordpress)
 - WooCommerce: 3.0 (`wc_get_products` added)
 
 ### Updating minimum requirements
