@@ -1,3 +1,10 @@
+<?php
+
+// Exit if accessed directly.
+defined('ABSPATH') || exit;
+
+?>
+
 <div class="mbz-config">
   <form action="<?php echo esc_url(menu_page_url(MAILBIZ_PLUGIN_SLUG, false)) ?>" method="post">
     <input type="hidden" name="action" value="mailbiz-update-admin-config">
