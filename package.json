@@ -1,6 +1,6 @@
 {
   "name": "mailbiz-woocommerce-plugin",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "repository": "git@github.com:Mailbiz/Mailbiz.Woocommerce.Plugin.git",
   "author": "Mailbiz <mailbiz.com.br>",
   "scripts": {
