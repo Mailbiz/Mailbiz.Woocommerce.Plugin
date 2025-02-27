@@ -29,26 +29,18 @@ if (defined('MAILBIZ_PLUGIN_LOADED')) {
 }
 define('MAILBIZ_PLUGIN_LOADED', true);
 
-if (!defined('MAILBIZ_PLUGIN_DIR')) {
-	define('MAILBIZ_PLUGIN_DIR', __DIR__);
-}
-
-if (!defined('MAILBIZ_PLUGIN_SLUG')) {
-	$dir_exploded = explode('/', MAILBIZ_PLUGIN_DIR) ;
-	define('MAILBIZ_PLUGIN_SLUG', end($dir_exploded) ?: 'mailbiz-tracker-for-woocommerce');
-}
-
-if (!defined('MAILBIZ_PLUGIN_URL')) {
-	define('MAILBIZ_PLUGIN_URL', plugins_url('/' . MAILBIZ_PLUGIN_SLUG));
-}
+define('MAILBIZ_PLUGIN_VERSION', '1.0.3');
+define('MAILBIZ_PLUGIN_SLUG', 'mailbiz-tracker-for-woocommerce');
+define('MAILBIZ_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('MAILBIZ_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 if (is_admin()) {
-	require_once MAILBIZ_PLUGIN_DIR . '/admin/mailbiz-admin.php';
+	require_once MAILBIZ_PLUGIN_DIR . 'admin/mailbiz-admin.php';
 	add_action('init', ['Mailbiz\\Admin', 'init']);
 } else {
-	require_once MAILBIZ_PLUGIN_DIR . '/recovery/mailbiz-recovery.php';
+	require_once MAILBIZ_PLUGIN_DIR . 'recovery/mailbiz-recovery.php';
 	add_action('init', ['Mailbiz\\Recovery', 'init']);
 
-	require_once MAILBIZ_PLUGIN_DIR . '/client/mailbiz-client.php';
+	require_once MAILBIZ_PLUGIN_DIR . 'client/mailbiz-client.php';
 	add_action('init', ['Mailbiz\\Client', 'init']);
 }

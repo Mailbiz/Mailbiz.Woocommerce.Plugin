@@ -28,10 +28,6 @@ class Client
 	#region [hooks]
 	public static function init_hooks()
 	{
-		if (!is_plugin_active('woocommerce/woocommerce.php')) {
-			return;
-		}
-
 		if (get_option('mailbiz_integration_enable') !== 'yes') {
 			return;
 		}
@@ -43,9 +39,13 @@ class Client
 			return;
 		}
 
-		require_once MAILBIZ_PLUGIN_DIR . '/tracker/mailbiz-tracker.php';
-		require_once MAILBIZ_PLUGIN_DIR . '/tracker/mailbiz-cart-id.php';
-		require_once MAILBIZ_PLUGIN_DIR . '/tracker/mailbiz-order-id.php';
+		if (!is_plugin_active('woocommerce/woocommerce.php')) {
+			return;
+		}
+
+		require_once MAILBIZ_PLUGIN_DIR . 'tracker/mailbiz-tracker.php';
+		require_once MAILBIZ_PLUGIN_DIR . 'tracker/mailbiz-cart-id.php';
+		require_once MAILBIZ_PLUGIN_DIR . 'tracker/mailbiz-order-id.php';
 
 		self::register_tracker();
 
@@ -74,12 +74,12 @@ class Client
 	}
 	public static function register_and_enqueue_integration_hub()
 	{
-		wp_register_script('mailbiz-integration-hub', MAILBIZ_PLUGIN_URL . '/client/scripts/integration-hub.js', [],  '1.0.0', false);
+		wp_register_script('mailbiz-integration-hub', MAILBIZ_PLUGIN_URL . 'client/scripts/integration-hub.js', [], MAILBIZ_PLUGIN_VERSION, false);
 		wp_enqueue_script('mailbiz-integration-hub');
 	}
 	public static function register_tracker()
 	{
-		wp_register_script('mailbiz-tracker', MAILBIZ_PLUGIN_URL . '/client/scripts/mb-track.js', [], '1.0.0', false);
+		wp_register_script('mailbiz-tracker', MAILBIZ_PLUGIN_URL . 'client/scripts/mb-track.js', [], MAILBIZ_PLUGIN_VERSION, false);
 	}
 	public static function enqueue_tracker()
 	{

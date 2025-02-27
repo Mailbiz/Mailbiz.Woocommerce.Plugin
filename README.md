@@ -122,7 +122,7 @@ After setting up the environment, you can start developing. Any changes made to 
 ### Bumping the version
 
 - `package.json`
-- `/src/mailbiz-tracker-for-woocommerce.php`
+- `/src/mailbiz-tracker-for-woocommerce.php` (both header and constant)
 - `/readme.txt`
 
 ### Publishing the version

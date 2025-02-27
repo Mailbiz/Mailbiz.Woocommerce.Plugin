@@ -38,7 +38,7 @@ class Admin
 
 	public static function load_resources()
 	{
-		wp_register_style('mailbiz-config-css', MAILBIZ_PLUGIN_URL . '/admin/assets/config.css', [], '1.0.0');
+		wp_register_style('mailbiz-config-css', MAILBIZ_PLUGIN_URL . 'admin/assets/config.css', [], MAILBIZ_PLUGIN_VERSION);
 		wp_enqueue_style('mailbiz-config-css');
 	}
 
@@ -52,7 +52,7 @@ class Admin
 
 		$get_boolean_arg = function ($key) {
 			$value = isset($_POST[$key]) ? sanitize_text_field(wp_unslash($_POST[$key])) : null;
-			return $value == 'on' ? 'yes' : 'no';
+			return $value === 'on' ? 'yes' : 'no';
 		};
 
 		$integration_enable = $get_boolean_arg('integration-enable');
@@ -84,7 +84,15 @@ class Admin
 		) {
 			add_action('admin_notices', ['Mailbiz\\Admin', 'load_success']);
 		} else {
-			$integration_enable = 'no';
+			if (!$is_integration_key_valid) {
+				$integration_enable = 'no';
+			}
+			if (!$is_woocommerce_active) {
+				$journey_enable = 'no';
+			}
+		}
+
+		if ($integration_enable === 'no') {
 			$journey_enable = 'no';
 		}
 
