@@ -155,6 +155,20 @@ Update the "Requires" fields in:
 - MySQL: 8.0
 - PHP: 8.2.24
 
+## Cache
+
+Cache plugins can significantly impact the functionality of the Mailbiz WooCommerce Plugin.
+If the Wordpress installation is using cache plugins without the proper configuration, unexpected issues may arise due to cached events.
+Two key cache configurations are essential:
+
+  - Disable caching for logged-in users <br />
+  *Can be done through the plugin's specific setting OR by adding `wordpress_logged_in_*` to the cookie exclusion list*
+  - Disable caching when items are in the cart <br />
+  *Can be done through the plugin's specific setting OR by adding `woocommerce_items_in_cart` to the cookie exclusion list*
+
+After setting up these configurations it is a good idea to clear the cache of the site. <br />
+Additionally, if there are problems with the insertion of the Integration Hub, like it not being inserted in some pages, clearing the cache can also solve the problem.
+
 ## Docs
 
 Docs
