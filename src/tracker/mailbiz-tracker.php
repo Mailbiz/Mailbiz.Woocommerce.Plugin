@@ -26,8 +26,11 @@ class Tracker
     $possible_brand_taxonomies = ['product_brand', 'yith_product_brand', 'pa_brand'];
     foreach ($possible_brand_taxonomies as $taxonomy) {
       $brands = get_the_terms($product_id, $taxonomy);
-      if (!is_wp_error($brands) && isset($brands[0])) {
-        return $brands[0];
+      if (is_wp_error($brands) || empty($brands)) {
+        continue;
+      }
+      if (isset($brands[0]->name)) {
+        return $brands[0]->name;
       }
     }
     return null;
