@@ -3,7 +3,7 @@ Contributors: mailbiz0derik
 Tags: mailbiz, ecommerce, pixel, tracker, woocommerce
 Requires at least: 4.1
 Tested up to: 6.7
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -26,10 +26,13 @@ You have to have a paid subscription to Mailbiz to get an integration key and be
 
 == Changelog ==
 
+= 1.0.6 =
+* Fix: cart.sync total was not including freight (shipping), causing abandoned-cart messages to show a phantom discount.
+
 = 1.0.5 =
 * First version of the plugin to be published in the Wordpress Plugin Directory.
 
 == Upgrade Notice ==
 
-= 1.0.5 =
-* First version of the plugin to be published in the Wordpress Plugin Directory.
+= 1.0.6 =
+* Fixes cart.sync total calculation to correctly include freight.
