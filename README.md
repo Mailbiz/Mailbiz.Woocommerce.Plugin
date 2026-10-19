@@ -139,7 +139,7 @@ After setting up the environment, you can start developing. Any changes made to 
 
 - WordPress: 4.1.0 (`script_loader_tag` added)
 - PHP: 7.0 (required by Wordpress)
-- WooCommerce: 3.0 (`wc_get_products` added)
+- WooCommerce: 3.2 (`WC_Cart::get_subtotal`/`get_shipping_total`/`get_discount_total`/`get_total` added)
 
 ### Updating minimum requirements
 
