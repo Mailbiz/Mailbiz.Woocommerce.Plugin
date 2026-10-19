@@ -137,7 +137,7 @@ class Tracker
       'freight' => floatval($cart->get_shipping_total()),
       'discounts' => floatval($cart->get_discount_total()),
       'tax' => floatval($cart->get_taxes_total()),
-      'total' => floatval($cart->get_cart_contents_total()),
+      'total' => floatval($cart->get_total('edit')),
       'coupons' => self::get_coupons_string($cart->get_coupons()),
       'currency' => get_woocommerce_currency(),
       'delivery_address' => self::get_cart_delivery_address(WC()->customer->get_shipping()),
