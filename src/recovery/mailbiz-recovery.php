@@ -36,7 +36,7 @@ class Recovery
       return;
     }
 
-    if ($utm_source !== 'mailbiz') {
+    if (!in_array($utm_source, ['mailbiz', 'flowbiz'], true)) {
       return;
     }
 
