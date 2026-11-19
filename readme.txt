@@ -3,7 +3,7 @@ Contributors: mailbiz0derik
 Tags: mailbiz, ecommerce, pixel, tracker, woocommerce
 Requires at least: 4.1
 Tested up to: 6.7
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -26,6 +26,9 @@ You have to have a paid subscription to Mailbiz to get an integration key and be
 
 == Changelog ==
 
+= 1.0.7 =
+* Fix: cart recovery links with utm_source=flowbiz were opening an empty cart; they now restore the cart like utm_source=mailbiz.
+
 = 1.0.6 =
 * Fix: cart.sync total was not including freight (shipping), causing abandoned-cart messages to show a phantom discount.
 
@@ -34,5 +37,5 @@ You have to have a paid subscription to Mailbiz to get an integration key and be
 
 == Upgrade Notice ==
 
-= 1.0.6 =
-* Fixes cart.sync total calculation to correctly include freight.
+= 1.0.7 =
+* Fixes cart recovery for links with utm_source=flowbiz.
